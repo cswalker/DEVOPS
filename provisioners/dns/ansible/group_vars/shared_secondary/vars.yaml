@@ -1,0 +1,17 @@
+---
+#OCI Section
+instance_ip: 10.10.1.3
+instance_subnet_id: "" #OCID of the Subnet which the DNS will be created
+instance_compartment: "" #ICUD if the Compartment which the DNS will be created
+instance_hostname: "dns02"
+metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ instance_hostname }}" #Jenkins info for managing instances
+
+#DNS Configuration Section
+pod_cidr: "10.10"  
+reverse_pod_cidr: "10.10"
+dns_primary_ip: 10.10.1.2 
+dns_secondary_ip: 10.10.1.3 
+zone: "sr.custom.dns.my.com"
+key_secret: "" #Your MD5 Key Secret
+forwarder: "shared-resources"
+name_conf_template_path: "secondarydns"

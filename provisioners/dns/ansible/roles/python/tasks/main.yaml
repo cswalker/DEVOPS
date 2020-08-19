@@ -1,0 +1,5 @@
+---
+- name: "Install Python DNS"
+  yum:
+    name: "python-dns"
+    state: present

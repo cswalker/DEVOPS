@@ -1,0 +1,49 @@
+options {
+        #BIND9 Directory
+        directory "/var/named";
+        #crash file
+        dump-file "var/named/data/cache_dump.db";
+        #crash statistics
+        statistics-file "var/named/data/named_stats.txt";
+        #crash memory statistics
+        memstatistics-file "var/named/data/named_mem_stats.txt";
+        #port to listen for queries
+        listen-on port 53 { any; };
+        #who can query this server
+        allow-query     { any; };
+        #recursive queries allowed
+        recursion yes; 
+};
+#key authentication
+key "{{ zone }}." {
+    algorithm hmac-md5;
+    secret "{{ key_secret }}";
+};
+#authoritive zone
+zone "{{ zone }}" {
+        type master;
+        file "/var/named/forward.{{ zone }}.zone";
+        allow-update { key "{{ zone }}."; };
+        also-notify { {{ dns_secondary_ip }}; };
+	allow-transfer { {{ dns_secondary_ip }}; };
+};
+#reverse authoritive zone
+zone "{{ reverse_pod_cidr }}.in-addr.arpa"{
+        type master;
+        file "/var/named/reverse.{{ zone }}.zone";
+        allow-update { key "{{ zone }}."; };
+        also-notify { {{ dns_secondary_ip }}; };
+	allow-transfer { {{ dns_secondary_ip }}; };
+};
+#Create Logging
+logging {
+channel bindlog {
+file "/var/named/named.log" versions 3 size 5m;
+print-time yes;
+print-category yes;
+print-severity yes;
+};
+category xfer-out { bindlog;};
+category xfer-in { bindlog;};
+category security { bindlog;};
+};

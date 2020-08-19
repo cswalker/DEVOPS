@@ -1,0 +1,10 @@
+---
+- name: "Remove A Record"
+  nsupdate:
+    key_name: "{{ zone }}."
+    key_secret: "{{ key_secret }}"
+    server: "{{ dns_primary_ip }}"
+    zone: "{{ zone }}."
+    record: "{{ record }}"
+    type: "A"
+    state: absent

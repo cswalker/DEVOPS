@@ -1,0 +1,13 @@
+
+$TTL    86400
+@       IN      SOA     dns01.{{ zone }}. root.{{ zone }}. (
+                                        2020041602      ; serial
+                                        3H              ; refresh
+                                        15M             ; retry
+                                        1W              ; expiry
+                                        1D )            ; minimum
+
+                        IN NS           dns01.{{ zone }}.
+                        IN NS           dns02.{{ zone }}.
+dns01.{{ zone }}.     IN  A   {{ dns_primary_ip }}
+dns02.{{ zone }}.     IN  A   {{ dns_secondary_ip }}

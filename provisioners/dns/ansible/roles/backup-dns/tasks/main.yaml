@@ -1,0 +1,22 @@
+---
+- name: "Create Backup Directory"
+  file:
+    path: "/tmp/{{ backup_file_name }}"
+    state: directory
+    mode: '0755'
+
+- name: "Remove previous Backup"
+  file:
+    path: "/tmp/{{ backup_file_name }}.zip"
+    state: absent
+    
+- name: "Copy DNS File"
+  shell:
+    cmd: "cp -R /etc/named.* /tmp/{{ backup_file_name }}/ && cp -r /var/named /tmp/{{ backup_file_name }}/"
+  become: yes
+  become_user: root
+
+- name: "Backup DNS Files"
+  archive:
+    path: "/tmp/{{ backup_file_name }}"
+    dest: "/tmp/{{ backup_file_name }}.zip"

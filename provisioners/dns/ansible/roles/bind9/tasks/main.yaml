@@ -1,0 +1,10 @@
+---
+- name: "Install Bind9 & Libraries"
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - bind
+      - bind-libs
+      - bind-utils

@@ -1,0 +1,11 @@
+---
+- hosts:    
+    - dev_primary
+    - shared_primary
+  become: yes
+  become_user: root
+  vars:
+    record: "{{ arg_record }}"
+    instance_private_ip: "{{ arg_instance_private_ip }}"
+  roles:
+    - update-dns

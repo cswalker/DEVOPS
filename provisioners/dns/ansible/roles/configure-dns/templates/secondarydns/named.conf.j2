@@ -1,0 +1,41 @@
+options {
+        directory "/var/named";
+        dump-file "var/named/data/cache_dump.db";
+        statistics-file "var/named/data/named_stats.txt";
+        memstatistics-file "var/named/data/named_mem_stats.txt";
+        listen-on port 53 { any; };
+        allow-query     { any; };
+        recursion yes; 
+};
+#key authentication
+key "{{ zone }}." {
+    algorithm hmac-md5;
+    secret "{{ key_secret }}";
+};
+#authoritive forward zone
+zone "{{ zone }}" {
+        type slave;
+        file "/var/named/slaves/forward.{{ zone }}.zone";
+        masters { {{ dns_primary_ip }}; };
+        allow-update-forwarding { key "{{ zone }}."; };
+};
+#reverse authoritive zone
+zone "{{ pod_cidr }}.in-addr.arpa"{
+        type slave;
+        file "/var/named/slaves/reverse.{{ zone }}.zone";
+        masters { {{ dns_primary_ip }}; };
+        allow-update-forwarding { key "{{ zone }}."; };
+
+};
+#Create Logging
+logging {
+channel bindlog {
+file "/var/named/named.log" versions 3 size 5m;
+print-time yes;
+print-category yes;
+print-severity yes;
+};
+category xfer-out { bindlog;};
+category xfer-in { bindlog;};
+category security { bindlog;};
+};

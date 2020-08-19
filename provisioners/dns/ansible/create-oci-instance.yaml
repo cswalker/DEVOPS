@@ -1,0 +1,14 @@
+---
+- hosts:
+    - localhost
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ instance_hostname }}"
+    instance_ad: "{{ arg_instance_ad }}"
+    jenkins_user: "{{ arg_jenkins_user }}"
+
+  roles:
+    - create-oci
+  environment:
+    OCI_ANSIBLE_AUTH_TYPE: "instance_principal"
+    

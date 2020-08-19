@@ -1,0 +1,18 @@
+---
+- name: "Add DNS configuration"
+  template:
+    src: "templates/{{ name_conf_template_path }}/named.conf.j2"
+    dest: "/etc/named.conf"
+
+- name: "Add DNS zone"
+  template:
+    src: "{{ name_conf_template_path }}/{{ item }}.zone.j2"
+    dest: /var/named/{{ item }}.{{ zone }}.zone
+  with_items: "{{ zone_files }}"
+  when: zone_files is defined
+
+- name: "Enable and start dns"
+  systemd:
+    name: named
+    state: started
+    enabled: yes
