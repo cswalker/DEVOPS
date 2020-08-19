@@ -27,15 +27,15 @@ data "terraform_remote_state" "dev" {
 
 ###Availability Domains
 #Set Availability Domains 1, 2, & 3
-data "oci_identity_availability_domain" "iadad1" {
+data "oci_identity_availability_domain" "ashad1" {
   compartment_id = var.tenancy_ocid
   ad_number      = 1
 }
-data "oci_identity_availability_domain" "iadad2" {
+data "oci_identity_availability_domain" "ashad2" {
   compartment_id = var.tenancy_ocid
   ad_number      = 2
 }
-data "oci_identity_availability_domain" "iadad3" {
+data "oci_identity_availability_domain" "ashad3" {
   compartment_id = var.tenancy_ocid
   ad_number      = 3
 }

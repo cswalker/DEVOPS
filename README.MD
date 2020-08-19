@@ -76,8 +76,8 @@ Spoke resources can all be found within the corresponding environment directory.
 Creating a New Spoke
 
   Object Storage & Terraform State Data
-    Navigate to OCI Control Panel, and within the switchfly-infra-storage compartment navigate to object storage.
-    Create a new bucket. Bucket name should be sflytfsflytf[compartment_name]. E.g. sflytfdev.
+    Navigate to OCI Control Panel, then to object storage.
+    Create a new bucket. Bucket name should be [compartment_name]. E.g. Devlopment.
     Within the new bucket, upload a 0kb file named terraform.tfstate.
 
   Create a Pre-Authenticated Request for the new terraform.tfstate file.
