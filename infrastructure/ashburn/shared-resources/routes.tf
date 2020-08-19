@@ -24,7 +24,7 @@ resource "oci_core_route_table" "privnet_routetables" {
   }
   #Route Rule from Shared-Resources to dev
   route_rules {
-    destination       = "10.64.0.0/16"
+    destination       = "10.12.0.0/16"
     destination_type  = "CIDR_BLOCK"
     network_entity_id = data.terraform_remote_state.dev.outputs.sr_pod_lpgw_id
   }
@@ -54,7 +54,7 @@ resource "oci_core_route_table" "pubnet_routetables" {
   }
   #Route Rule from Shared-Resources to dev
   route_rules {
-    destination       = "10.64.0.0/16"
+    destination       = "10.12.0.0/16"
     destination_type  = "CIDR_BLOCK"
     network_entity_id = data.terraform_remote_state.dev.outputs.sr_pod_lpgw_id
   }
@@ -99,13 +99,13 @@ resource "oci_core_route_table" "hub_drg_routetable" {
   display_name          = "transit-hub drg routetable"
   #Route Rule for Shared-Resources
   route_rules {
-    destination         = "10.67.0.0/16"
+    destination         = "10.10.0.0/16"
     destination_type    = "CIDR_BLOCK"
     network_entity_id   = oci_core_local_peering_gateway.hub_pod_lpg.id
   }
   #Route Rule for dev
   route_rules {
-    destination       = "10.64.0.0/16"
+    destination       = "10.12.0.0/16"
     destination_type  = "CIDR_BLOCK"
     network_entity_id = data.terraform_remote_state.dev.outputs.hub_pod_lpgw_id
   }
