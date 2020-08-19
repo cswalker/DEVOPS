@@ -6,6 +6,10 @@ Oracle Terraform Documentation
 
      https://www.terraform.io/docs/providers/oci/index.html
 
+Terraform Configurations: 
+
+  /infrastructure
+
 
 Terraform Devops
 
