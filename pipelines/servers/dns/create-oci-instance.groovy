@@ -1,8 +1,8 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'job', choices: ['init', 'run'], description: 'Should the job be initialized or ran')
-        choice(name: 'env_type', choices: ['dev', 'shared'], description: 'The environment the server is created in')
+        choice(name: 'job', choices: ['run', 'init'], description: 'Should the job be initialized or ran')
+        choice(name: 'env_type', choices: ['dev', 'shared', 'qa', 'uat'], description: 'The environment the server is created in')
         choice(name: 'instance_ad', choices: ['US-ASHBURN-AD-1', 'US-ASHBURN-AD-2', 'US-ASHBURN-AD-3'], description: 'Availibility domain the instance will be created in')
         choice(name: 'role', choices: ['primary', 'secondary'], description: 'Should the dns be Primary or Secondary')
    }

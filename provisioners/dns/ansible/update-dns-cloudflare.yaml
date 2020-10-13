@@ -1,0 +1,9 @@
+---
+- hosts:
+    - localhost
+  vars:
+    record_name: "{{ arg_record_name }}"
+    record_value: "{{ arg_record_value }}"
+  roles:
+    - vault-get-provisioner-token #Common Role
+    - update-dns-cloudflare

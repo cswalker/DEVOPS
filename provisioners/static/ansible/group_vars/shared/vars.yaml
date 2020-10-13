@@ -1,0 +1,17 @@
+---
+instance_subnet_id: "" #OCID of the Subnet which the DNS will be created
+instance_compartment: "" #ICUD if the Compartment which the DNS will be created
+domain: "{{ env_name }}-{{ server_name }}.{{ env_type }}.my.custom.domain.name"
+#mount
+mounts:
+  - src: "10.10.1.5:/images"
+    path: "/mnt/images"
+    fstype: "nfs"
+  - src: "10.10.1.6:/wwwroot"
+    path: "/mnt/wwwroot"
+    fstype: "nfs"
+
+#Config files
+nginx_configs:
+  - { dest_config: "hostname", server_name: "{{ domain }}" }
+  - { dest_config: "ip_address", server_name: "{{ inventory_hostname }}" }

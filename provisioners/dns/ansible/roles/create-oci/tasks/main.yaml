@@ -61,4 +61,4 @@
   delegate_to: localhost
   template:
     src: "instance-facts.j2"
-    dest: "{{ metadata_base_path }}dns.yaml"
+    dest: "{{ metadata_base_path }}/dns.yaml"

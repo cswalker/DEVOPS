@@ -1,0 +1,16 @@
+---
+- hosts:
+    - qa
+    - uat
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    server_name: "{{ arg_server_name }}"
+    instance_ad: "{{ arg_instance_ad }}"
+    jenkins_user: "{{ arg_jenkins_user }}"
+  roles:
+    - oci-create-instance
+    - ssh-wait
+  environment:
+    OCI_ANSIBLE_AUTH_TYPE: "instance_principal"
+    

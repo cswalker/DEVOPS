@@ -1,0 +1,5 @@
+# provision
+instance_subnet_id: "" #OCID of the Subnet which the DNS will be created
+instance_compartment: "" #ICUD if the Compartment which the DNS will be created
+
+

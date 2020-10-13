@@ -35,6 +35,18 @@ zone "{{ reverse_pod_cidr }}.in-addr.arpa"{
         also-notify { {{ dns_secondary_ip }}; };
 	allow-transfer { {{ dns_secondary_ip }}; };
 };
+#OCI forwarder
+zone "{{ forwarder }}.oraclevcn.com" {
+        type forward;
+        forward only;
+        forwarders {169.254.169.254; };
+};
+#Compartment forwarder
+zone "{{ compartment_forwarder }}" {
+        type forward;
+        forward only;
+        forwarders { {{ compartment_forwarder_primary_ip }}; {{ compartment_forwarder_secondary_ip }}; };
+};
 #Create Logging
 logging {
 channel bindlog {

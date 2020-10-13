@@ -1,0 +1,24 @@
+---
+- name: "Install Nginx"
+  yum:
+    name: "nginx"
+    state: present
+
+- name: "Disable SELinux"
+  selinux:
+    state: disabled
+
+- name: "Configure Nginx Config"
+  template:
+    src: "server.conf.j2"
+    dest: "/etc/nginx/conf.d/{{ item.dest_config }}.conf"
+    owner: "root"
+    group: "root"
+    lstrip_blocks: yes
+  with_items: "{{ nginx_configs }}"
+
+- name: "Restart Nginx"
+  service:
+    name: "nginx"
+    state: restarted
+    enabled: yes

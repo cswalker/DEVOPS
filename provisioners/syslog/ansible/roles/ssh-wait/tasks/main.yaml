@@ -1,0 +1,9 @@
+---
+- name: "Wait for SSH Connection"
+  wait_for:
+    host: "{{ create_result.instance.primary_private_ip }}"
+    port: 22
+    delay: 10
+    state: started
+    sleep: 5
+  connection: local

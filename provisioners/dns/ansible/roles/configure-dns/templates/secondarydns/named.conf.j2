@@ -23,9 +23,51 @@ zone "{{ zone }}" {
 zone "{{ pod_cidr }}.in-addr.arpa"{
         type slave;
         file "/var/named/slaves/reverse.{{ zone }}.zone";
-        masters { {{ dns_primary_ip }}; };
+        masters { 10.65.11.2; };
         allow-update-forwarding { key "{{ zone }}."; };
 
+};
+#Compartment forwarder
+zone "{{ compartment_forwarder }}" {
+        type forward;
+        forward only;
+        forwarders { {{ compartment_forwarder_primary_ip }}; {{ compartment_forwarder_secondary_ip }}; };
+};
+#OCI forwarder
+zone "{{ forwarder }}.oraclevcn.com" {
+        type forward;
+        forward only;
+        forwarders { 169.254.169.254; };
+};
+#switchfly forwarder
+zone "corp.switchfly.com" {
+        type forward;
+        forward only;
+        forwarders { 10.14.36.5; 10.14.36.6; };
+};
+#intra.aexp.com forwarder
+zone "intra.aexp.com" {
+        type forward;
+        forward only;
+        forwarders { 10.14.36.5; 10.14.36.6; };
+};
+#corp forwarder
+zone "corp.ezrez" {
+        type forward;
+        forward only;
+        forwarders { 10.14.11.22; 10.14.11.23; };
+};
+#sfo forwarder
+zone "sfo.corp.ezrez" {
+        type forward;
+        forward only;
+        forwarders { 10.14.11.22; 10.14.11.23; };
+};
+#iad prod forwarder
+zone "iad.prod.ezrez" {
+        type forward;
+        forward only;
+        forwarders { 10.14.36.5; 10.14.36.6; };
 };
 #Create Logging
 logging {

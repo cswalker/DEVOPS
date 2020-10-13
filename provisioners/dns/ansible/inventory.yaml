@@ -1,8 +1,0 @@
-dev_primary:
-  hosts: 10.12.1.2
-dev_secondary:
-  hosts: 10.12.1.3
-shared_primary:
-  hosts: 10.10.1.2
-shared_secondary:
-  hosts: 10.10.1.3

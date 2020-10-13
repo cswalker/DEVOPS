@@ -1,0 +1,13 @@
+---
+- name: "Create custom Group"
+  group:
+    name: "custom"
+    state: present
+
+- name: "Create custom User"
+  user:
+    name: "custom"
+    group: "custom"
+    shell: "/bin/bash"
+    home: "/home/custom"
+    create_home: yes

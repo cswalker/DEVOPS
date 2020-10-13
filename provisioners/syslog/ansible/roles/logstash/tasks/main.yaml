@@ -1,0 +1,12 @@
+---
+#Logstash installation
+- name: "Install the Logstash RPM"
+  yum:
+    name: "logstash"
+    state: present
+
+- name: "Start Logstash"
+  service:
+   name: "logstash"
+   state: started
+   enabled: yes

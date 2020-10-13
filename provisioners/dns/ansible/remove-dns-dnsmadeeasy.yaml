@@ -1,0 +1,10 @@
+---
+- hosts:
+    - localhost
+  vars:
+    record_name: "{{ arg_record_name }}"
+    record_value: "{{ arg_record_value }}"
+    record_type: "{{ arg_record_type }}"
+  roles:
+    - vault-get-provisioner-token #Common Role
+    - remove-dns-dnsmadeeasy

@@ -10,3 +10,11 @@ instance_image: "ocid1.image.oc1.iad.aaaaaaaabip6l5i5ikqsnm64xwrw2rrkj3tzo2dv47f
 firewall_allow_ports: 
   - "53/tcp"
   - "53/udp"
+
+#Vault configuration
+#dnsmadeeasy
+dnsmadeeasy_api_key: "{{ lookup('hashi_vault', 'secret=kv/secret1:key1 token={{ vault_token }} url={{ vault_url }}') }}"
+dnsmadeeasy_api_secret: "{{ lookup('hashi_vault', 'secret=kv/secret1:key2 token={{ vault_token }} url={{ vault_url }}') }}"
+#cloudflare
+cloudflare_email: "{{ lookup('hashi_vault', 'secret=kv/secret2:key1 token={{ vault_token }} url={{ vault_url }}') }}"
+cloudflare_api_key: "{{ lookup('hashi_vault', 'secret=kv/secret2:key2 token={{ vault_token }} url={{ vault_url }}') }}"

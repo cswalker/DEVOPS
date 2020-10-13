@@ -1,0 +1,25 @@
+---
+#note elastisearch & Kibana need to be the same version
+- name: "Install the Elasticsearch RPM"
+  yum:
+    name: "elasticsearch"
+    state: "present"
+
+- name: "Add Elasticsearch Configuration"
+  template:
+    src: "elasticsearch.yml.j2"
+    dest: "/etc/elasticsearch/elasticsearch.yml"
+
+- name: "Copy filebeat index template to local"
+  copy:
+    src: "filebeat-index-template.json"
+    dest: "/tmp/filebeat-index-template.json"
+
+- name: "Install filebeat index template"
+  command: "curl -XPUT 'http://localhost:9200/_template/filebeat?pretty' -d@/tmp/filebeat-index-template.json"
+  
+- name: "Start Elasticsearch"
+  service:
+   name: "elasticsearch"
+   state: "started"
+   enabled: yes

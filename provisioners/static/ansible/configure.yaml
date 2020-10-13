@@ -1,0 +1,18 @@
+---
+- hosts:
+    - uat
+    - shared
+  become: yes
+  become_user: root
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    server_name: "{{ arg_server_name }}"
+    public_ip: "{{ arg_public_ip }}"
+  roles:
+    - vault-get-provisioner-token #Common Roles
+    - users
+    - firewall
+    - mounts
+    - nginx
+    - railgun

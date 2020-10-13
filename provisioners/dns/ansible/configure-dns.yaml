@@ -4,6 +4,10 @@
     - dev_secondary
     - shared_primary
     - shared_secondary
+    - qa_primary
+    - qa_secondary
+    - uat_primary
+    - uat_secondary
   become: yes
   become_user: root
   roles:

@@ -1,0 +1,34 @@
+---
+ansible_ssh_user: "opc" #Use your default OCI user
+ansible_ssh_private_key_file: "~/.ssh/oci_private_key" #Private Key created for SSH access into OCI
+
+# provision
+instance_ad: "sSxD:US-ASHBURN-AD-1"
+instance_shape: "VM.Standard.E2.1"
+instance_hostname: "{{ env_name }}-{{ server_name }}"
+instance_image: "ocid1.image.oc1.iad.aaaaaaaabip6l5i5ikqsnm64xwrw2rrkj3tzo2dv47frowlt3droliwpvfaa" # OCID for Oracle Linux 7 in Ashburn
+metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ env_name }}/"
+
+#Kibana section
+kibana_version: "7.x"
+kibana_elasticsearch_url: "http://localhost:9200"
+kibana_elasticsearch_username: ""
+kibana_elasticsearch_password: ""
+
+# configure section
+firewall_allow_ports: 
+  - "80/tcp"
+  - "443/tcp"
+  - "53/tcp"
+  - "53/udp"
+  - "389/tcp"
+  - "389/udp"
+  - "636/tcp"
+  - "636/udp"
+  - "88/tcp"
+  - "88/udp"
+  - "445/tcp"
+  - "445/udp"
+  - "446/tcp"
+  - "446/udp"
+  - "3268/tcp"

@@ -1,0 +1,30 @@
+---
+#note elastisearch & Kibana need to be the same version
+- name: "Install the Kibana RPM"
+  yum:
+    name: "kibana"
+    state: "present"
+
+- name: "Copy Kibana configuration"
+  template:
+    src: "kibana.yml.j2"
+    dest: "/etc/kibana/kibana.yml"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+
+- name: "Ensure Kibana is started and enabled at boot"
+  service:
+    name: "kibana"
+    state: "started"
+    enabled: true
+
+- name: "Ensure Kibana is running"
+  uri:
+    url: "http://127.0.0.1:5601/login"
+    status_code: "200"
+  register: "result"
+  until: "result.status == 200"
+  retries: "60"
+  delay: "1"

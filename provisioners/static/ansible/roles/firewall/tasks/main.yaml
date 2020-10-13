@@ -1,0 +1,16 @@
+---
+# - enable firewall ports
+- name: "Enable Firewalld ports"
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  with_items: "{{ firewall_allow_ports }}"
+
+# - enable and start firewall service
+- name: "Enable Firewalld"
+  systemd:
+    state: restarted
+    enabled: yes
+    name: "firewalld"
+    

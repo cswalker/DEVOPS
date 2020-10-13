@@ -1,0 +1,3 @@
+---
+bind_name: "{{ lookup('hashi_vault', 'secret=kv/secret:key1 token={{ vault_token }} url={{ vault_url }}') }}"
+bind_pass: "{{ lookup('hashi_vault', 'secret=kv/secret:key2 token={{ vault_token }} url={{ vault_url }}') }}"

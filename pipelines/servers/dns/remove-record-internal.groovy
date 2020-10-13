@@ -1,8 +1,8 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'job', choices: ['init', 'run'], description: 'Should the job be initialized or ran')
-        choice(name: 'env_type', choices: ['dev', 'shared'], description: 'The environment the server is created in')
+        choice(name: 'job', choices: ['run', 'init'], description: 'Should the job be initialized or ran')
+        choice(name: 'env_type', choices: ['dev', 'shared', 'qa', 'uat'], description: 'The environment the server is created in')
         string(name: 'record', defaultValue: '', description: 'Provide a URL safe unique name for this record')
     }
     stages {
@@ -14,7 +14,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Configure DNS') {
             steps {
                 script {
@@ -22,7 +22,7 @@ pipeline {
                         ansible-playbook -i provisioners/dns/ansible/inventory.yaml \
                             -l ${env_type}_primary \
                             -e arg_record='${record}' \
-                            provisioners/dns/ansible/remove-dns.yaml
+                            provisioners/dns/ansible/remove-dns-internal.yaml
                     """
                 }
             }

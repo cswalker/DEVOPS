@@ -1,0 +1,10 @@
+---
+- name: "Remove DNS Made Easy A Record"
+  dnsmadeeasy:
+    account_key: "{{ dnsmadeeasy_api_key }}"
+    account_secret: "{{ dnsmadeeasy_api_secret }}"
+    domain: "MY.TLD.COM"
+    record_name: "{{ record_name }}"
+    record_type: "{{ record_type }}"
+    record_value: "{{ record_value }}"
+    state: absent
