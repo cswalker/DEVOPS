@@ -5,4 +5,4 @@ bind_pass: "{{ lookup('hashi_vault', 'secret=kv/bind:pass token={{ vault_token }
 
 ###AD configuration
 commmon_realmd_sudo_config:
-  - { dest_config: "productionops", env_sudoers: "it\\ prod\\ ops" }
+  - { dest_config: "productionops", env_sudoers: "domain\\ admins" }

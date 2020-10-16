@@ -22,6 +22,7 @@ data "terraform_remote_state" "shared_resources" {
   backend = "http"
   config = {
     address = "Insert URL to shared-resources Terraform State Object Storage Here"
+  }
 }
 
 ###Availability Domains
