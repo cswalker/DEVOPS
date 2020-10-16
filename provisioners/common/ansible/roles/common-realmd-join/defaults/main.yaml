@@ -1,3 +1,8 @@
 ---
-bind_name: "{{ lookup('hashi_vault', 'secret=kv/secret:key1 token={{ vault_token }} url={{ vault_url }}') }}"
-bind_pass: "{{ lookup('hashi_vault', 'secret=kv/secret:key2 token={{ vault_token }} url={{ vault_url }}') }}"
+#Vault configuration
+bind_name: "{{ lookup('hashi_vault', 'secret=kv/bind:name token={{ vault_token }} url={{ vault_url }}') }}"
+bind_pass: "{{ lookup('hashi_vault', 'secret=kv/bind:pass token={{ vault_token }} url={{ vault_url }}') }}"
+
+###AD configuration
+commmon_realmd_sudo_config:
+  - { dest_config: "productionops", env_sudoers: "it\\ prod\\ ops" }

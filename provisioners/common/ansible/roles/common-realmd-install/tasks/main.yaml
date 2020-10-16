@@ -8,3 +8,4 @@
   pip:
     name: "pexpect"
     state: present
+    lock_timeout: 180

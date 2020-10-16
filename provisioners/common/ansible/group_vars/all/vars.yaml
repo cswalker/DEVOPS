@@ -1,0 +1,4 @@
+---
+#OCI configuration
+ansible_ssh_user: "opc"
+ansible_ssh_private_key_file: "~/.ssh/oci_private_key"

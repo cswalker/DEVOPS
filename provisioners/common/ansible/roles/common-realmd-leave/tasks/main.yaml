@@ -1,18 +1,21 @@
 ---
-- name: "Remove system from AD"
-  command: "realm leave"
-
-- name: "Disable SSSD Service"
-  service: 
-    name: "sssd"
-    enabled: no
+- name: "Check if machine is already bound"
+  shell: "/bin/bash -c 'realm list | grep sssd'"
+  register: result
+  ignore_errors: true
 
 - name: "Modify SSH Configuration"
-  files: 
+  copy: 
     src: "sshd_config"
     dest: "/etc/ssh/sshd_config"
+  when: result is succeeded
 
 - name: "Restart SSH Service"
   service:
     name: "sshd"
     state: restarted
+  when: result is succeeded
+
+- name: "Remove system from AD"
+  command: "realm leave"
+  when: result is succeeded

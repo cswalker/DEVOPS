@@ -1,22 +1,26 @@
 ---
 - name: "Check if machine is already bound"
-  shell: /bin/bash -c "realm list | grep sssd"
+  shell: "/bin/bash -c 'realm list | grep sssd'"
   register: realmd_bound
   changed_when: false
   ignore_errors: true
 
 - name: "Join system to AD"
   expect:
-    command: "/bin/bash -c '/usr/sbin/realm join domain --user={{ bind_name }}'"
+    command: "/bin/bash -c '/usr/sbin/realm join corp.ezrez --user={{ bind_name }}'"
     responses:
       (?i)Password for *: "{{ bind_pass }}"
     timeout: 300
   when: realmd_bound is failed
 
 - name: "Add sudoers"
-  copy: 
-    src: "sudoers"
-    dest: "/etc/sudoers.d/sudoers"
+  template: 
+    src: "sudoers.j2"
+    dest: "/etc/sudoers.d/{{ item.dest_config }}"
+    owner: "root"
+    group: "root"
+    lstrip_blocks: yes
+  with_items: "{{ commmon_realmd_sudo_config }}"
 
 - name: "Modify SSSD Configuration"
   copy: 
@@ -32,6 +36,7 @@
   copy: 
     src: "sshd_config"
     dest: "/etc/ssh/sshd_config"
+  timeout: 300
 
 - name: "Restart SSH Service"
   service:
