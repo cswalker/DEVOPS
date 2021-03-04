@@ -1,0 +1,50 @@
+---
+- name: "Check for check_mk client if alreday exists"
+  stat: "path=/etc/systemd/system/check_mk.socket"
+  register: "client_status"
+  ignore_errors: "yes"
+
+- name: "Install Check_mk client Package"
+  yum:
+    name: "http://{{ checkmk_server_url }}/{{ site_name }}/check_mk/agents/check-mk-agent-1.6.0p19-1.noarch.rpm"
+    state: "present"
+  when: "client_status.stat.exists == False"
+  ignore_errors: "yes"
+
+- name: "Enable port 6556"
+  firewalld:
+    port: "6556/tcp"
+    permanent: "yes"
+    state: "enabled"
+  become: "yes"
+
+- name: "Reload firewalld to make port 6556 work"
+  systemd:
+    state: reloaded
+    enabled: yes
+    name: "firewalld"
+  become: "yes"
+
+- name: "Add host to Check_MK site via WebAPI"
+  uri:
+    url: "http://{{ checkmk_server_url }}/{{ site_name }}/check_mk/webapi.py?action=add_host&_username={{ secrets['cmk_automation_user'] }}&_secret={{ secrets['cmk_automation_pass'] }}"
+    method: 'POST'
+    body: 'request={"hostname":"{{ instance_hostname }}","folder":"","attributes":{"ipaddress":"{{ inventory_hostname }}","tag_agent":"cmk-agent"}}'
+    return_content: 'yes'
+  
+- name: "Discover the Services"
+  uri:
+    url: "http://{{ checkmk_server_url }}/{{ site_name }}/check_mk/webapi.py?action=discover_services&_username={{ secrets['cmk_automation_user'] }}&_secret={{ secrets['cmk_automation_pass'] }}"
+    method: 'POST'
+    body: 'request={"hostname":"{{ instance_hostname }}"}'
+    timeout: '120'
+    return_content: 'yes'
+
+- name: "Activate the changes"
+  uri:
+    url: "http://{{ checkmk_server_url }}/{{ site_name }}/check_mk/webapi.py?action=activate_changes&_username={{ secrets['cmk_automation_user'] }}&_secret={{ secrets['cmk_automation_pass'] }}"
+    method: 'POST'
+    body: ‘request={“sites”:[“{{ site_name }}”],"allow_foreign_changes":"1"}’
+    timeout: '120'
+    return_content: 'yes'
+

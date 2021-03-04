@@ -1,0 +1,14 @@
+---
+- hosts:
+    - dev
+    - qa
+    - uat
+    - prod
+    - shared
+  become: yes
+  become_user: root
+  roles:
+    - oci-vars
+    - timezone
+    - checkmk-install
+    - firewall

@@ -1,8 +1,8 @@
 ---
 #OCI Section
 instance_ip: 10.11.1.2
-instance_subnet_id: "" #OCID of the Subnet which the DNS will be created
-instance_compartment: "" #ICUD if the Compartment which the DNS will be created
+instance_subnet_id: "{{ regions.ashburn.qa.vcn.subnets.svc_ocid }}"
+instance_compartment: "{{ compartments.qa.compartment_ocid }}"
 instance_hostname: "dns01"
 metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ instance_hostname }}" #Jenkins info for managing instances
 
@@ -14,7 +14,7 @@ dns_secondary_ip: 10.11.1.3
 zone: "qa.custom.dns.my.com" #Custom DNS Zone
 key_secret: "" #Your MD5 Key Secret
 forwarder: "qa"
-compartment_forwarder: "shared-resources.ash.oci.ezrez"
+compartment_forwarder: "shared.my.custom.domain.name"
 compartment_forwarder_primary_ip: "10.10.1.2"
 compartment_forwarder_secondary_ip: "10.10.1.3"
 name_conf_template_path: "secondarydns"

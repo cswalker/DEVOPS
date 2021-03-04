@@ -1,0 +1,5 @@
+---
+secrets: {
+  bind-username: "shared",
+  bind-password: "shared",
+}

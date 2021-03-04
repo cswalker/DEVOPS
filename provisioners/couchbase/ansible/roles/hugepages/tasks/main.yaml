@@ -1,0 +1,13 @@
+---
+- name: "Create disable-thp service"
+  template:
+    src: disable-thp.service.j2
+    dest: /etc/systemd/system/disable-thp.service
+    mode: "0755"
+  
+- name: "Start disable-thp service"
+  systemd:
+    name: disable-thp.service
+    state: restarted
+    daemon_reload: yes
+    enabled: yes

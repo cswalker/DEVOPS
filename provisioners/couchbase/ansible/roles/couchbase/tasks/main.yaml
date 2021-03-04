@@ -1,0 +1,19 @@
+---
+- name: "Install Couchbase"
+  yum:
+    name: "couchbase-server-community"
+    state: present
+    lock_timeout: 180
+
+- name: "Start Couchbase"
+  service: 
+    name: "couchbase-server" 
+    state: started
+
+- name: "Add couchbase Symlink to Local Bin Path"
+  file:
+    src: "/opt/couchbase/bin"
+    dest: "/usr/local/bin/couchbase"
+    owner: "root"
+    group: "root"
+    state: link

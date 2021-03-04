@@ -1,0 +1,13 @@
+---
+- name: "Create secret"
+  oracle.oci.oci_vault_secret:
+    vault_id: "{{ regions.ashburn[env_type].vault.vault_ocid }}"
+    compartment_id: "{{ compartments[env_type].compartment_ocid }}"
+    secret_name: "{{ secret_name }}"
+    description: "Secret for {{ env_type }} {{ secret_name }}"
+    key_id: "{{ regions.ashburn[env_type].vault.master_key_ocid }}"
+    secret_content:
+      content: "{{ secret | string | b64encode }}"
+      content_type: BASE64
+  become: false
+  delegate_to: localhost

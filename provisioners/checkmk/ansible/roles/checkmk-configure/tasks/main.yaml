@@ -1,0 +1,46 @@
+---
+- name: "Check omd command"
+  command:
+    cmd: "omd version"
+
+- name: "Check for site_name if alreday exists"
+  stat: "path=/opt/omd/sites/{{ site_name }}"
+  register: "site_status"
+  ignore_errors: "yes"
+
+- name: "Configure the checkmk Server"
+  command:
+    cmd: "omd create {{ site_name }}"
+  when: "site_status.stat.exists == False"
+  ignore_errors: "yes"
+
+
+- name: "Start created server"
+  command:
+    cmd: "omd start {{ site_name }}"
+  when: "site_status.stat.exists == False"
+  ignore_errors: "yes"
+
+- name: "Make sure we can use htpasswd module"
+  yum: 
+   name: "python-passlib"
+   state: "present"
+
+- name: "Change site admin password"
+  htpasswd:
+   path: "/opt/omd/sites/{{ site_name }}/etc/htpasswd"
+   name: "{{ secrets['cmk_username'] }}"
+   password: "{{ secrets['cmk_admin_pass'] }}"
+  become: true
+  become_user: "{{ site_name }}"
+
+- name: "Set LDAP configuration"
+  template:
+    src: "user_connections.mk.j2"
+    dest: "/opt/omd/sites/{{ site_name }}/etc/check_mk/multisite.d/wato/user_connections.mk"
+    owner: "{{ site_name }}"
+
+- name: "Restart HTTPD service"
+  service:
+    name: "httpd"
+    state: "restarted"

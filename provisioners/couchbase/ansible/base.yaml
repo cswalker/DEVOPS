@@ -1,0 +1,26 @@
+---
+- hosts:
+    - base
+  become: yes
+  become_user: root
+  roles:
+    - yum
+    - common-timezone
+    - firewall
+    - hugepages
+    - couchbase
+    - common-realmd-install
+
+- hosts:
+    - dev
+  become: yes
+  become_user: root
+  vars:
+    env_name: "{{ arg_env_name }}"
+  roles:
+    - yum
+    - hosts
+    - common-timezone
+    - firewall
+    - hugepages
+    - couchbase

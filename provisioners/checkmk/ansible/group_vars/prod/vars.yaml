@@ -1,0 +1,16 @@
+---
+# provision
+instance_compartment: "{{ compartments.prod.compartment_ocid }}" 
+instance_subnet_id: "{{ regions.ashburn.prod.vcn.subnets.app_ocid }}"
+
+env_type: "prod"
+site_name: "checkmk"
+
+secrets: {
+  cmk_username: "prod",
+  cmk_admin_pass: "prod",
+  cmk_automation_user: "prod",
+  cmk_automation_pass: "prod",
+  bind-username: "shared",
+  bind-password: "shared"
+}

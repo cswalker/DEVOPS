@@ -12,6 +12,6 @@
     instance_image: "{{ arg_instance_image | default(default_instance_image) }}"
   roles:
     - oci-create-instance
-    - ssh-wait
+    - common-ssh-wait
   environment:
     OCI_ANSIBLE_AUTH_TYPE: "instance_principal"

@@ -1,0 +1,11 @@
+---
+- name: "Get All Secrets From Compartment"
+  oracle.oci.oci_vault_secret_facts:
+    compartment_id: "{{ compartments[env_type].compartment_ocid }}"
+  become: false
+  delegate_to: localhost
+  register: vault_all_secrets
+
+- name: "Debug All Secrets For a Compartment"
+  debug:
+    var: vault_all_secrets

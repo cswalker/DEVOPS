@@ -1,6 +1,5 @@
 ---
 - hosts:
-    - uat
     - shared
   become: yes
   become_user: root
@@ -10,7 +9,6 @@
     server_name: "{{ arg_server_name }}"
     public_ip: "{{ arg_public_ip }}"
   roles:
-    - vault-get-provisioner-token #Common Roles
     - users
     - firewall
     - mounts

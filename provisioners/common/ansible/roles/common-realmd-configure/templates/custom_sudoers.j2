@@ -1,0 +1,13 @@
+# Groups
+{% if sudoers.groups is defined and sudoers.groups is iterable %}
+{%  for group in sudoers.groups %}
+%my.domain\\{{ group }} ALL=(ALL) ALL
+{%  endfor %}
+{% endif %}
+
+# Users
+{% if sudoers.users is defined and sudoers.users is iterable %}
+{%  for user in sudoers.users %}
+{{ user }} ALL=(ALL) ALL
+{%  endfor %}
+{% endif %}

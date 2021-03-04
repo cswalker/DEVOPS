@@ -1,0 +1,14 @@
+---
+- hosts:
+    - prod
+  become: yes
+  become_user: root
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    couchbase_primary_ip: "{{ arg_couchbase_primary_ip }}"
+    couchbase_replica_ip: "{{ arg_couchbase_replica_ip }}"
+  roles:
+    - oci-vars
+    - common-vault-get-secrets
+    - add-cluster-node

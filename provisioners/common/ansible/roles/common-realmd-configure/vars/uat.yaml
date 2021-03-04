@@ -1,0 +1,5 @@
+---
+sudoers:
+  groups:
+    - "it\\ prod\\ ops"
+    - "quality\\ assurance"

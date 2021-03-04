@@ -1,0 +1,15 @@
+---
+- name: "Delete host on Check_MK site"
+  uri:
+    url: "http://{{ checkmk_server_url }}/{{ site_name }}/check_mk/webapi.py?action=delete_host&_username={{ secrets['cmk_automation_user'] }}&_secret={{ secrets['cmk_automation_pass'] }}"
+    method: 'POST'
+    body: 'request={"hostname":"{{ checkmk_hostname }}"}'
+    return_content: 'yes'
+ 
+- name: "Activate the changes"
+  uri:
+    url: "http://{{ checkmk_server_url }}/{{ site_name }}/check_mk/webapi.py?action=activate_changes&_username={{ secrets['cmk_automation_user'] }}&_secret={{ secrets['cmk_automation_pass'] }}"
+    method: 'POST'
+    body: ‘request={“sites”:[“{{ site_name }}”],"allow_foreign_changes":"1"}’
+    timeout: '120'
+    return_content: 'yes'

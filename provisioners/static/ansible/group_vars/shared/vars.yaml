@@ -1,6 +1,6 @@
 ---
-instance_subnet_id: "" #OCID of the Subnet which the DNS will be created
-instance_compartment: "" #ICUD if the Compartment which the DNS will be created
+instance_subnet_id: "{{ regions.ashburn.shared.vcn.subnets.svc_ocid }}"
+instance_compartment: "{{ compartments.shared.compartment_ocid }}"
 domain: "{{ env_name }}-{{ server_name }}.{{ env_type }}.my.custom.domain.name"
 #mount
 mounts:

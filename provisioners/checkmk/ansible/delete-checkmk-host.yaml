@@ -1,0 +1,16 @@
+---
+- hosts:
+    - dev
+    - qa
+    - uat
+    - prod
+    - shared
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    cmkhost_name: "{{ arg_cmkhost_name }}"
+    checkmk_server_url: "{{ arg_checkmk_server_url }}"
+  roles:
+    - oci-vars
+    - vault-get-secrets
+    - checkmk-host-delete

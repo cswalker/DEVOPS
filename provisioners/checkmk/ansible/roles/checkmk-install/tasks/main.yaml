@@ -1,0 +1,5 @@
+---
+- name: "Download RPM Package"
+  yum:
+    name: "https://download.checkmk.com/checkmk/1.6.0p19/check-mk-raw-1.6.0p19-el7-38.x86_64.rpm"
+    state: "present"

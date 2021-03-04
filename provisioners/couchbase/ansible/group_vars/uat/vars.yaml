@@ -1,0 +1,15 @@
+---
+# provision
+instance_compartment: "{{ compartments.uat.compartment_ocid }}"
+instance_subnet_id: "{{ regions.ashburn.uat.vcn.subnets.app_ocid }}"
+
+secrets: {
+  couchbase_user: "uat",
+  couchbase_password: "uat",
+  bind-username: "shared",
+  bind-password: "shared",
+  OCI_pubkey: "shared"
+}
+
+couchbase_ramsize: "12000"
+couchbase_index_ramsize: "512"

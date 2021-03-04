@@ -4,10 +4,10 @@ ansible_ssh_private_key_file: "~/.ssh/oci_private_key" #Private Key created for 
 
 # provision
 instance_shape: "VM.Standard.E2.1" #Preferred Instance Shape for DNS
-instance_image: "ocid1.image.oc1.iad.aaaaaaaabip6l5i5ikqsnm64xwrw2rrkj3tzo2dv47frowlt3droliwpvfaa" # OCID for Oracle Linux 7 in Ashburn
+instance_image: "{{ regions.ashburn.default_images.ol7_ocid }}"
 
 # configure section
-firewall_allow_ports: 
+firewall_allow_ports:
   - "53/tcp"
   - "53/udp"
 

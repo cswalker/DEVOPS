@@ -1,0 +1,17 @@
+---
+# Currently, the create bucket pipeline will error out if a bucket is created
+# with a name that already exists. This is expected behaviour, however, if this
+# task grows beyond the create bucket command, an error catch will need to be
+# added to allow pass through to the next stage. 
+- name: "Create Bucket"
+  command: >
+    /opt/couchbase/bin/couchbase-cli \
+    bucket-create \
+    --cluster={{ instance_hostname }}:8091 \
+    --user={{ secrets['couchbase_user'] }} \
+    --password={{ secrets['couchbase_password'] }} \
+    --bucket=default \
+    --bucket-ramsize={{ bucket_ramsize }} \
+    --bucket-type=couchbase \ 
+    --enable-flush=0 \
+    --wait

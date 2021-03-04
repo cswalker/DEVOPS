@@ -6,7 +6,7 @@ ansible_ssh_private_key_file: "~/.ssh/oci_private_key" #Private Key created for 
 instance_ad: "sSxD:US-ASHBURN-AD-1"
 instance_shape: "VM.Standard.E2.1"
 instance_hostname: "{{ env_name }}-{{ server_name }}"
-instance_image: "ocid1.image.oc1.iad.aaaaaaaabip6l5i5ikqsnm64xwrw2rrkj3tzo2dv47frowlt3droliwpvfaa" # OCID for Oracle Linux 7 in Ashburn
+instance_image: "{{ regions.ashburn.default_images.ol7_ocid }}"
 metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ env_name }}/"
 
 #Kibana section
@@ -16,7 +16,7 @@ kibana_elasticsearch_username: ""
 kibana_elasticsearch_password: ""
 
 # configure section
-firewall_allow_ports: 
+firewall_allow_ports:
   - "80/tcp"
   - "443/tcp"
   - "53/tcp"

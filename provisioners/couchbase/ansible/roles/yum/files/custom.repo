@@ -1,0 +1,5 @@
+[switchfly]
+name=switchfly
+enabled=1
+baseurl=http://yum-mirror.my.yum.url/data
+gpgcheck=0

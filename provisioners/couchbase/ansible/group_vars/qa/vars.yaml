@@ -1,0 +1,15 @@
+---
+# provision
+instance_compartment: "{{ compartments.qa.compartment_ocid }}"
+instance_subnet_id: "{{ regions.ashburn.qa.vcn.subnets.app_ocid }}"
+
+secrets: {
+  couchbase_user: "qa",
+  couchbase_password: "qa",
+  bind-username: "shared",
+  bind-password: "shared",
+  OCI_pubkey: "shared"
+}
+
+couchbase_ramsize: "12000"
+couchbase_index_ramsize: "512"

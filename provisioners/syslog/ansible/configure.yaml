@@ -1,5 +1,5 @@
 ---
-- hosts: 
+- hosts:
     - qa
     - uat
   become: yes
@@ -15,8 +15,6 @@
     - kibana
     - nginx
     - logstash
-    - vault-get-provisioner-token
     - common-realmd-install
-    - common-realmd-join
+    - common-realmd-configure
     - metricbeat
- 

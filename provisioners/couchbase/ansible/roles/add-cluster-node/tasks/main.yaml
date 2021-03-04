@@ -1,0 +1,26 @@
+---
+- name: "Add Node To Couchbase Cluster"
+  command: >
+    /opt/couchbase/bin/couchbase-cli server-add -c {{ couchbase_primary_ip }}:8091 \
+    --user {{ secrets['couchbase_user'] }} \
+    --password {{ secrets['couchbase_password'] }} \
+    --server-add {{ couchbase_replica_ip }}:8091 \
+    --server-add-username {{ secrets['couchbase_user'] }} \
+    --server-add-password {{ secrets['couchbase_password'] }} \
+    --services data,index,query,fts
+  register: add_node
+
+- name: "Add Node to Couchbase Result"
+  debug:
+    var: add_node
+
+- name: "Rebalance Couchbase Cluster"
+  command: >
+    /opt/couchbase/bin/couchbase-cli rebalance -c {{ couchbase_primary_ip }}:8091 \
+    --user {{ secrets['couchbase_user'] }} \
+    --password {{ secrets['couchbase_password'] }}
+  register: rebalance_cluster
+
+- name: "Rebalance the Cluster"
+  debug:
+    var: rebalance_cluster

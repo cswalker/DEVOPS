@@ -1,0 +1,9 @@
+---
+- name: "Delete Bucket"
+  command: >
+    /opt/couchbase/bin/couchbase-cli \
+    bucket-delete \
+    --cluster={{ instance_hostname }}:8091 \
+    --user={{ secrets['couchbase_user'] }} \
+    --password={{ secrets['couchbase_password'] }} \
+    --bucket=default

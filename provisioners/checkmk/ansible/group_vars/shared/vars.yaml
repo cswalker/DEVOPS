@@ -1,0 +1,15 @@
+---
+instance_compartment: "{{ compartments.shared.compartment_ocid }}" #Shared-Resources Compartment
+instance_subnet_id: "{{ regions.ashburn.shared.vcn.subnets.ctr_ocid }}" #Shared-Resources CTR Subnet
+
+env_type: "shared"
+site_name: "checkmk"
+
+secrets: {
+  cmk_username: "shared",
+  cmk_admin_pass: "shared",
+  cmk_automation_user: "prod",
+  cmk_automation_pass: "prod",
+  bind-username: "shared",
+  bind-password: "shared" 
+}

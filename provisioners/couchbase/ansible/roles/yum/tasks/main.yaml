@@ -1,0 +1,5 @@
+---
+- name: "Add /etc/yum.repos.d/custom.repo"
+  copy:
+    src: "custom.repo"
+    dest: "/etc/yum.repos.d/custom.repo"

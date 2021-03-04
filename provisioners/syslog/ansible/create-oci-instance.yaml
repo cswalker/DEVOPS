@@ -10,7 +10,6 @@
     jenkins_user: "{{ arg_jenkins_user }}"
   roles:
     - oci-create-instance
-    - ssh-wait
+    - common-ssh-wait
   environment:
     OCI_ANSIBLE_AUTH_TYPE: "instance_principal"
-    

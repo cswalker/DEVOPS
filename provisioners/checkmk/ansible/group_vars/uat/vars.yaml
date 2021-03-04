@@ -1,0 +1,14 @@
+---
+# provision
+instance_compartment: "{{ compartments.uat.compartment_ocid }}"
+instance_subnet_id: "{{ regions.ashburn.uat.vcn.subnets.app_ocid }}"
+
+env_type: "uat"
+site_name: "checkmk"
+
+secrets: {
+  cmk_username: "uat",
+  cmk_admin_pass: "uat",
+  bind-username: "shared",
+  bind-password: "shared" 
+}

@@ -1,0 +1,19 @@
+---
+- name: "Get Couchbase Cluster Information"
+  command: "/opt/couchbase/bin/couchbase-cli server-list --cluster localhost"
+  register: cluster_info
+  ignore_errors: yes
+
+- name: "Add Couchbase Configuration"
+  command: >
+    /opt/couchbase/bin/couchbase-cli \
+    cluster-init \
+    --cluster-username={{ secrets['couchbase_user'] }} \
+    --cluster-password={{ secrets['couchbase_password'] }} \
+    --cluster-port=8091 \
+    --cluster-ramsize={{ couchbase_ramsize }} \
+    --cluster-index-ramsize={{ couchbase_index_ramsize }} \
+    --services=data,index,query,fts
+  register: cluster_init
+  no_log: yes # log will print couchbase_password in commandline
+  when: not cluster_info is search("healthy active")

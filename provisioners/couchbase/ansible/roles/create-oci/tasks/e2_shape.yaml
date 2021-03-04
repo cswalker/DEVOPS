@@ -1,0 +1,30 @@
+---
+- name: "Launch a Standard E2 instance"
+  delegate_to: localhost
+  oci_instance:
+    availability_domain: "{{ instance_ad }}"
+    compartment_id: "{{ compartments[env_type].compartment_ocid }}"
+    name: "{{ instance_hostname }}"
+    image_id: "{{ instance_image }}"
+    shape: "{{ instance_shape }}"
+    vnic:
+      assign_public_ip: false
+      hostname_label: "{{ instance_hostname }}"
+      subnet_id: "{{ regions.ashburn[env_type].vcn.subnets.app_ocid }}"
+    metadata:
+      ssh_authorized_keys: "{{ secrets['OCI_pubkey'] }}"
+    defined_tags: {
+      'Common': {
+        'CreatedBy': "{{ jenkins_user }}",
+        'EnvironmentType': "{{ env_type }}",
+        'EnvironmentName': "{{ env_name }}",
+      },
+      'Instances': {
+        'ServerType': "couchbase",
+        'ServerName': "{{ server_name }}",
+      },
+      'Databases': {
+        'DatabaseType': "couchbase"
+      }
+    }
+  register: create_result
