@@ -28,6 +28,24 @@ resource "oci_core_route_table" "privnet_routetables" {
     destination_type  = "CIDR_BLOCK"
     network_entity_id = data.terraform_remote_state.dev.outputs.sr_pod_lpgw_id
   }
+  #Route Rule from Shared-Resources to qa
+  route_rules {
+    destination       = "10.13.0.0/16"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = data.terraform_remote_state.qa.outputs.sr_pod_lpgw_id
+  }
+  #Route Rule from Shared-Resources to uat
+  route_rules {
+    destination       = "10.14.0.0/16"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = data.terraform_remote_state.uat.outputs.sr_pod_lpgw_id
+  }
+    #Route Rule from Shared-Resources to prod
+  route_rules {
+    destination       = "10.15.0.0/16"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = data.terraform_remote_state.prod.outputs.sr_pod_lpgw_id
+  }
 }
 
 #creates a routetable for each shared-resource public subnets
@@ -57,6 +75,24 @@ resource "oci_core_route_table" "pubnet_routetables" {
     destination       = "10.12.0.0/16"
     destination_type  = "CIDR_BLOCK"
     network_entity_id = data.terraform_remote_state.dev.outputs.sr_pod_lpgw_id
+  }
+    #Route Rule from Shared-Resources to qa
+  route_rules {
+    destination       = "10.13.0.0/16"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = data.terraform_remote_state.qa.outputs.sr_pod_lpgw_id
+  }
+  #Route Rule from Shared-Resources to uat
+  route_rules {
+    destination       = "10.14.0.0/16"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = data.terraform_remote_state.uat.outputs.sr_pod_lpgw_id
+  }
+    #Route Rule from Shared-Resources to prod
+  route_rules {
+    destination       = "10.15.0.0/16"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = data.terraform_remote_state.prod.outputs.sr_pod_lpgw_id
   }
 }
 
@@ -108,6 +144,24 @@ resource "oci_core_route_table" "hub_drg_routetable" {
     destination       = "10.12.0.0/16"
     destination_type  = "CIDR_BLOCK"
     network_entity_id = data.terraform_remote_state.dev.outputs.hub_pod_lpgw_id
+  }
+    #Route Rule from Shared-Resources to qa
+  route_rules {
+    destination       = "10.13.0.0/16"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = data.terraform_remote_state.qa.outputs.sr_pod_lpgw_id
+  }
+  #Route Rule from Shared-Resources to uat
+  route_rules {
+    destination       = "10.14.0.0/16"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = data.terraform_remote_state.uat.outputs.sr_pod_lpgw_id
+  }
+    #Route Rule from Shared-Resources to prod
+  route_rules {
+    destination       = "10.15.0.0/16"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = data.terraform_remote_state.prod.outputs.sr_pod_lpgw_id
   }
   #Route Rule for Transit-Hub Service Gateway
   route_rules {
