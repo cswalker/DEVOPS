@@ -1,6 +1,0 @@
----
-- name: "POST DNS Backup file to OCI Object Storage"
-  command: "curl -T /tmp/{{ backup_file_name }}.zip {{ oci_par_url }}"
-  become: yes
-  become_user: root
-  

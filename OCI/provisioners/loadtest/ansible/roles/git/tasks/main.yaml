@@ -1,0 +1,33 @@
+---
+- name: "Install Git Dependencies"
+  yum:
+    name: 
+      - "@Development tools"
+      - "gettext-devel"
+      - "openssl-devel"
+      - "perl-CPAN"
+      - "perl-devel"
+      - "zlib-devel"
+    state: present
+    lock_timeout: 180
+
+- name: "Download Git and Decompress"
+  unarchive:
+    src: "https://github.com/git/git/archive/v2.25.0.tar.gz"
+    dest: "/usr/src"
+    remote_src: yes
+
+- name: "Make Configure Git"
+  command:
+    cmd: "make configure"
+    chdir: "/usr/src/git-2.25.0"
+
+- name: "Configure"
+  command:
+    cmd: "./configure --prefix=/usr/local"
+    chdir: "/usr/src/git-2.25.0"
+
+- name: "Make Install Git"
+  make:
+    chdir: "/usr/src/git-2.25.0"
+    target: "install"

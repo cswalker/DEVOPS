@@ -1,0 +1,9 @@
+---
+- name: "Create a volume backup"
+  oracle.oci.oci_blockstorage_volume_backup:
+    name: "{{ block_volume_backup_display_name }}"
+    volume_id: "{{ block_volume_backup_volume_id }}"
+    compartment_id: "{{ block_volume_backup_compartment_id }}"
+    state: "present"
+    type: "INCREMENTAL"
+    wait: "yes"

@@ -1,0 +1,11 @@
+---
+secrets: {
+  demoted_controller_username: "shared",
+  wind_username: "shared",
+  wind_password: "shared",
+}
+
+ansible_ssh_user: "{{ secrets['demoted_controller_username'] }}"
+ansible_ssh_pass: "{{ secrets['wind_password'] }}"
+ansible_shell_type: 'cmd'
+ansible_remote_tmp: 'C:\Windows\Temp\'

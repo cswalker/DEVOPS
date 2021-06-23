@@ -1,0 +1,20 @@
+---
+default_server_name: "domain-controller"
+default_instance_shape: "VM.Standard.E3.Flex"
+default_instance_image: "{{ regions.ashburn.default_images.win2016_ocid }}"
+default_instance_cpu: "2"
+default_instance_memory: "4"
+
+instance_compartment: "{{ compartments.corp.compartment_ocid }}"
+instance_hostname: "{{ env_name }}-{{ server_name }}"
+instance_has_public_ip: false
+instance_subnet_id: "{{ regions.ashburn.corp.vcn.subnets.ctr_ocid }}"
+metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ env_name }}"
+
+instance_domain: "my.domain"
+organization_unit: "OU=Corp,OU=ASH,OU=OCI,OU=Servers,DC=my,DC=domain"
+domain_controller: "dc-01.my.domain"
+
+ad_database_path: '%SYSTEMROOT%\NTDS'
+ad_log_path: '%SYSTEMROOT%\NTDS'
+ad_sysvol_path: '%SYSTEMROOT%\SYSVOL'

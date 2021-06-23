@@ -1,0 +1,11 @@
+---
+- name: "Creates zip with performance reports"
+  archive:
+    path: "/opt/repo/load-test/target/jmeter/reports/"
+    dest: "/tmp/perf_reports.zip"
+    format: "zip"
+
+- name: "Sends zipped reports to Jenkins server at /tmp/ folder"
+  fetch:
+    src: "/tmp/perf_reports.zip"
+    dest: "/tmp/"

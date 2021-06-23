@@ -1,0 +1,14 @@
+---
+- hosts:
+    - localhost
+  vars:
+    instance_id: "{{ arg_instance_id }}"
+    compartment_id: "{{ arg_compartment }}"
+    ad_id: "{{ arg_ad_id }}"
+    policy_type: "{{ arg_policy_type }}"
+    jenkins_user: "{{ arg_jenkins_user }}"
+  roles:
+    - common.oci-vars
+    - common.boot-backup
+  environment:
+    OCI_ANSIBLE_AUTH_TYPE: "instance_principal"

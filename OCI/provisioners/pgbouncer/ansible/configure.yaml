@@ -1,0 +1,37 @@
+---
+- hosts:
+    - qa
+    - dev
+    - uat
+  become: yes
+  become_user: root
+  vars_files:
+    - "{{ arg_configuration_file }}"
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    db_primary_ip: "{{ arg_db_primary_ip | default('') }}"
+    db_replica_ip: "{{ arg_db_replica_ip | default('') }}"
+    use_tx_pool_mode: "{{ arg_use_tx_pool_mode | default(false) }}"
+  roles:
+    - common.vault-get-secrets
+    - common.realmd-install
+    - common.realmd-configure
+    - pgbouncer-configure
+
+- hosts:
+    - prod
+  become: yes
+  become_user: root
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    primary_db_ip: "{{ arg_primary_db_ip | default('') }}"
+    database_name: "{{ arg_database_name }}"
+    replica_loadbalancer_ip: "{{ arg_replica_loadbalancer_ip | default('') }}"
+    replica_loadbalancer_listener_port: "{{ arg_replica_loadbalancer_listener_port }}"
+  roles:
+    - pgbouncer-configure-service
+    - pgbouncer-configure-hba
+    - pgbouncer-configure-ini
+    - pgbouncer-configure-users

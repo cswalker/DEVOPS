@@ -1,0 +1,12 @@
+---
+- name: "Ensure Local Admin for Ansible is recreated"
+  ansible.windows.win_user:
+    name: "{{ secrets['wind_username'] }}"
+    password: "{{ secrets['wind_password'] }}"
+    state: present
+    groups:
+      - "Administrators"
+      - "Remote Desktop Users"
+    password_expired: no
+    password_never_expires: yes
+    user_cannot_change_password: yes

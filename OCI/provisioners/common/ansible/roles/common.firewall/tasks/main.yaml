@@ -1,0 +1,13 @@
+---
+- name: "Enable firewalld ports"
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: "enabled"
+  with_items: "{{ common_firewall_allow_ports }}"
+
+- name: "Enable firewalld"
+  systemd:
+    state: "started"
+    enabled: yes
+    name: "firewalld"

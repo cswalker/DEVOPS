@@ -1,0 +1,11 @@
+---
+- name: "Create Repos Directory"
+  file:
+    path: "/opt/repo"
+    state: directory
+
+- name: "Clone load-test Repo"
+  command: "loadtest Repo URL"
+  args:
+    chdir: "/opt/repo"
+    creates: "{{ repository_path }}"

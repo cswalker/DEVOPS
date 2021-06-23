@@ -1,0 +1,6 @@
+---
+- name: "Remove Backend Set '{{ backendset_name }}'"
+  oracle.oci.oci_loadbalancer_backend_set:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    name: "{{ backendset_name }}"
+    state: absent

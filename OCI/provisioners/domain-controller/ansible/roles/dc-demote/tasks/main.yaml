@@ -1,0 +1,27 @@
+---
+- name: "Demote Domain Controller to Member Server"
+  ansible.windows.win_domain_controller:
+    domain_admin_user: "{{ instance_domain }}\\{{ secrets['bind-username'] }}"
+    domain_admin_password: "{{ secrets['bind-password'] }}"
+    local_admin_password: "{{ secrets['wind_password'] }}"
+    state: member_server
+  register: domain_state
+  failed_when: "'\"changed\":false' in domain_state.module_stdout"
+
+
+- name: "Invoking Reboot"
+  delegate_to: localhost
+  debug:
+    var: domain_state
+
+- name: "Lookup Instance Facts"
+  delegate_to: "localhost"
+  include_vars:
+    file: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+
+- name: "Reboot the Instance"
+  delegate_to: "localhost"
+  oracle.oci.oci_compute_instance_actions:
+    auth_type: "instance_principal"
+    instance_id: "{{ instance.id }}"
+    action: softreset

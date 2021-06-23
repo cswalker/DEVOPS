@@ -1,0 +1,65 @@
+options {
+        #BIND9 Directory
+        directory "/mnt/named";
+        #crash file
+        dump-file "/mnt/named/data/cache_dump.db";
+        #crash statistics
+        statistics-file "/mnt/named/data/named_stats.txt";
+        #crash memory statistics
+        memstatistics-file "mnt/named/data/named_mem_stats.txt";
+        #port to listen for queries
+        listen-on port 53 { any; };
+        #who can query this server
+        allow-query     { any; };
+        #recursive queries allowed
+        recursion yes;
+};
+#key authentication
+key "{{ zone }}." {
+    algorithm hmac-md5;
+    secret "{{ key_secret }}";
+};
+#authoritive zone
+zone "{{ zone }}" {
+        type master;
+        file "/mnt/named/forward.{{ zone }}.zone";
+        allow-update { key "{{ zone }}."; };
+        also-notify { {{ dns_secondary_ip }}; };
+	allow-transfer { {{ dns_secondary_ip }}; };
+};
+#reverse authoritive zone
+zone "{{ reverse_pod_cidr }}.in-addr.arpa"{
+        type master;
+        file "/mnt/named/reverse.{{ zone }}.zone";
+        allow-update { key "{{ zone }}."; };
+        also-notify { {{ dns_secondary_ip }}; };
+	allow-transfer { {{ dns_secondary_ip }}; };
+};
+#OCI forwarder
+zone "{{ forwarder }}.oraclevcn.com" {
+        type forward;
+        forward only;
+        forwarders {169.254.169.254; };
+};
+{% if compartment_forwarders is defined and compartment_forwarders is iterable %}
+{%  for pod in compartment_forwarders %}
+#{{ pod.fqdn }} forwarder
+zone "{{ pod.fqdn }}" {
+        type forward;
+        forward only;
+        forwarders { {{ pod.primary_ip }}; {{ pod.secondary_ip}}; };
+};
+{%  endfor %}
+{% endif %}
+#Create Logging
+logging {
+channel bindlog {
+file "/mnt/named/named.log" versions 3 size 5m;
+print-time yes;
+print-category yes;
+print-severity yes;
+};
+category xfer-out { bindlog;};
+category xfer-in { bindlog;};
+category security { bindlog;};
+};

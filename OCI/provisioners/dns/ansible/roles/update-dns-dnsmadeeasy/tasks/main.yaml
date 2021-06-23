@@ -1,0 +1,10 @@
+---
+- name: "Create DNS Made Easy Record"
+  dnsmadeeasy:
+    account_key: "{{ secrets['dnsmadeeasy_api_key'] }}"
+    account_secret: "{{ secrets['dnsmadeeasy_api_secret'] }}"
+    domain: "my_domain.com"
+    record_name: "{{ record_name }}"
+    record_type: "{{ record_type }}"
+    record_value: "{{ record_value }}"
+    state: present

@@ -1,9 +1,0 @@
----
-- name: "Add A record to forward zone"
-  nsupdate:
-    key_name: "{{ zone }}."
-    key_secret: "{{ key_secret }}"
-    server: "{{ dns_primary_ip }}"
-    zone: "{{ zone }}."
-    record: "{{ record }}"
-    value: "{{ instance_private_ip }}"

@@ -1,0 +1,5 @@
+---
+instance_compartment: "{{ compartments.uat.compartment_ocid }}"
+instance_subnet_id: "{{ regions.ashburn.uat.vcn.subnets.ctr_ocid }}"
+
+jmeter_target_domain: "uat.my.domain"

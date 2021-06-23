@@ -1,0 +1,6 @@
+---
+- name: "Install Python DNS"
+  ansible.builtin.yum:
+    name: "python-dns"
+    state: present
+    lock_timeout: 180

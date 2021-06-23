@@ -1,0 +1,14 @@
+---
+- name: "Upsert the Listener"
+  oracle.oci.oci_loadbalancer_listener:
+    default_backend_set_name: "{{ listener_default_backend_set_name }}"
+    port: 443
+    protocol: "HTTP"
+    name: "{{ client_name }}_listener"
+    load_balancer_id: "{{ loadbalancer_ocid }}"
+    state: present
+    routing_policy_name: "{{ routing_policy_name }}"
+    connection_configuration:
+      idle_timeout: "120"
+    ssl_configuration:
+      certificate_name: "{{ loadbalancer_certificate_name }}"

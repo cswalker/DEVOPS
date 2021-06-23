@@ -1,0 +1,13 @@
+---
+- hosts:
+    - shared
+    - qa
+    - uat
+    - prod
+  become: yes
+  become_user: root
+  vars:
+    branch_name: "{{ arg_branch_name }}"
+  roles:
+    - common.oci-vars
+    - pull-branch

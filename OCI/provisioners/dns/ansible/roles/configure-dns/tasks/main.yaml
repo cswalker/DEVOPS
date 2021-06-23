@@ -1,0 +1,37 @@
+---
+- name: "Add DNS configuration"
+  ansible.builtin.template:
+    src: "templates/{{ name_conf_template_path }}/named.conf.j2"
+    dest: "/etc/named.conf"
+
+- name: "Register forward stat"
+  ansible.builtin.stat:
+    path: "/mnt/named/forward.{{ zone }}.zone"
+  register: forward_zone
+
+- name: "Add forward zone"
+  ansible.builtin.template:
+    src: "{{ name_conf_template_path }}/forward.zone.j2"
+    dest: "/mnt/named/forward.{{ zone }}.zone"
+  when:
+    - not forward_zone.stat.exists
+    - server_name == "01"
+
+- name: "Register reverse stat"
+  ansible.builtin.stat:
+    path: "/mnt/named/reverse.{{ zone }}.zone"
+  register: reverse_zone
+
+- name: "Add reverse zone"
+  ansible.builtin.template:
+    src: "{{ name_conf_template_path }}/reverse.zone.j2"
+    dest: "/mnt/named/reverse.{{ zone }}.zone"
+  when:
+    - not reverse_zone.stat.exists
+    - server_name == "01"
+
+- name: "Enable and start dns"
+  ansible.builtin.systemd:
+    name: named
+    state: started
+    enabled: yes

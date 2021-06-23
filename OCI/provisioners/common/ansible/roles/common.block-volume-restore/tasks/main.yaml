@@ -1,0 +1,12 @@
+---
+- name: "Restore volume from backup"
+  oracle.oci.oci_blockstorage_volume:
+    availability_domain: "{{ block_volume_restore_ad }}"
+    display_name: "{{ block_volume_restore_display_name }}"
+    compartment_id: "{{ block_volume_restore_compartment_id }}"
+    source_details:
+      id: "{{ block_volume_restore_volume_id }}"
+      type: "volumeBackup"
+    state: "present"
+    wait: "yes"
+    wait_timeout: "2400"

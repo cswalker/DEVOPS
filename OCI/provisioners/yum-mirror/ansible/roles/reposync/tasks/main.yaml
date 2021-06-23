@@ -1,0 +1,9 @@
+---
+- name: "Install CreateRepo Package"
+  yum:
+    name: "createrepo"
+    state: present
+    lock_timeout: 180
+  
+# reposync -g -l -d -m --repoid=postgresql --download_path=/mnt/yumdata/postgresql/9.4/redhat/rhel-7Server-x86_64/
+#  createrepo /mnt/yumdata/postgresql/

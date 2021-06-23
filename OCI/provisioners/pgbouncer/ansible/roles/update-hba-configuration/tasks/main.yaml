@@ -1,0 +1,14 @@
+---
+- name: "Update HBA Configuration File"
+  blockinfile:
+    path: "/etc/pgbouncer/pg_hba.conf"
+    marker: "# <!-- {mark} ANSIBLE MANAGED BLOCK for {{ block_name }} -->"
+    content: "{{ hba_conf_entry }}"
+
+- name: "Restart pgbouncer service"
+  service:
+    name: "pgbouncer"
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+

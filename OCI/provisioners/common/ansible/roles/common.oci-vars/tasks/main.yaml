@@ -1,0 +1,3 @@
+---
+- name: "Include OCI Vars"
+  include_vars: "../../../../../configurations/oci/vars.yaml"

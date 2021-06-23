@@ -1,0 +1,5 @@
+---
+- hosts:
+    - prod
+  roles:
+    - app-backendset-remove

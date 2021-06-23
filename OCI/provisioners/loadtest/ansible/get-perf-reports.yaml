@@ -1,0 +1,10 @@
+---
+- hosts:
+    - shared
+    - qa
+    - uat
+    - prod
+  become: yes
+  become_user: root
+  roles:
+    - copy-jmeter-report

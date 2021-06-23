@@ -1,0 +1,22 @@
+---
+- name: "Gets tarball and unarchive"
+  unarchive:
+    src: "https://splunk_tarbal.tgz"
+    dest: "/opt"
+    remote_src: yes
+  become_user: "root"
+  become: yes
+
+- name: "Start the Splunk server and accept License"
+  command:
+    cmd: "./splunk start --accept-license --answer-yes --no-prompt"
+    chdir: "/opt/splunk/bin/"
+
+- name: "Enable init script"
+  command:
+    cmd: "./splunk enable boot-start --accept-license --answer-yes --no-prompt"
+    chdir: "/opt/splunk/bin/"
+
+
+
+

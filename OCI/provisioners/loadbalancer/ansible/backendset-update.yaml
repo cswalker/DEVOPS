@@ -1,0 +1,18 @@
+---
+- hosts:
+    - dev
+    - qa
+    - uat
+    - prod
+    - shared
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    server_name: "{{ arg_server_name }}"
+    backendset_name: "{{ arg_backendset_name }}"
+    policy: "{{ arg_policy }}"
+    health_check: "{{ arg_health_check }}"
+  roles:
+    - common.oci-vars
+    - loadbalancer-facts
+    - backendset-update

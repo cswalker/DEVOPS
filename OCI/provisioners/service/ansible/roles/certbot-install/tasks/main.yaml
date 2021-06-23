@@ -1,0 +1,49 @@
+---
+- name: "Download Certbot-Auto"
+  get_url:
+    url: "https://dl.eff.org/certbot-auto"
+    dest: "/usr/local/bin/certbot-auto"
+
+- name: "Set ownership of certbot-auto"
+  file:
+    path: "/usr/local/bin/certbot-auto"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: "Install Certbot DnsMadeEasy Module"
+  command: "/opt/eff.org/certbot/venv/bin/pip install certbot-dns-dnsmadeeasy"
+
+- name: "Create letsencrypt scripts dir"
+  file:
+    path: "/root/scripts/letsencrypt"
+    state: directory
+    mode: 0700
+
+- name: "Copy get_cert.sh script"
+  template:
+    src: "get_cert.sh"
+    dest: "/root/scripts/letsencrypt/"
+    mode: 0500
+
+- name: "Copy get_cert.sh script"
+  template:
+    src: "get_cert_v2.sh"
+    dest: "/root/scripts/letsencrypt/"
+    mode: 0500
+
+- name: "Create dnsmadeeasy credentials"
+  template:
+    src: "certbot_dnsmadeeasy_creds.j2"
+    dest: "/root/scripts/letsencrypt/certbot_dnsmadeeasy_creds"
+    mode: 0500
+
+- name: "Update sudoers to allow tomcat user to sudo the get_cert scripts without a password"
+  lineinfile:
+    path: "/etc/sudoers"
+    insertafter: "^root"
+    line: "{{ item }}"
+    validate: 'visudo -cf %s'
+  with_items:
+    - "tomcat ALL=(ALL) NOPASSWD:/root/scripts/letsencrypt/get_cert.sh"
+    - "tomcat ALL=(ALL) NOPASSWD:/root/scripts/letsencrypt/get_cert_v2.sh"

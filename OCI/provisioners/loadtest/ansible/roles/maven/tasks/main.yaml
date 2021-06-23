@@ -1,0 +1,30 @@
+---
+- name: "Create Maven Directory"
+  file:
+    path: "/opt/apache-maven"
+    state: directory
+
+- name: "Download Maven"
+  unarchive:
+    src: "https://downloads.apache.org/maven/maven-3/{{maven_version}}/binaries/apache-maven-{{maven_version}}-bin.zip"
+    dest: "/opt/apache-maven"
+    remote_src: yes
+
+- name: "Add Maven Profile"
+  template:
+    src: "maven.sh.j2"
+    dest: "/etc/profile.d/maven.sh"
+    owner: "root"
+    group: "root"
+    mode: u=rwx,g=rx,o=rx
+
+- name: "Source Maven Profile"
+  shell: "source /etc/profile.d/maven.sh"
+
+- name: "Add Maven Symlink to Local Bin Path"
+  file:
+    src: "/opt/apache-maven/apache-maven-{{maven_version}}/bin/mvn"
+    dest: "/usr/local/bin/mvn"
+    owner: "root"
+    group: "root"
+    state: link

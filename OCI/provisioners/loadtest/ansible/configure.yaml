@@ -1,0 +1,23 @@
+---
+- hosts:
+    - shared
+    - qa
+    - uat
+    - prod
+  become: yes
+  become_user: root
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    server_name: "{{ arg_server_name }}"
+  roles:
+    - common.oci-vars
+    - common.vault-get-secrets
+    - git
+    - gitlab
+    - java
+    - jmeter
+    - maven
+    - clone-repo
+    - common.realmd-install
+    - common.realmd-configure

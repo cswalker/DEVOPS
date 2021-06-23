@@ -1,0 +1,39 @@
+---
+- name: "Install AD-Domain Services Feature"
+  ansible.windows.win_feature:
+    name: "AD-Domain-Services"
+    include_management_tools: yes
+    state: present
+
+- name: "Promote Instance to Domain Controller"
+  ansible.windows.win_domain_controller:
+    database_path: "{{ ad_database_path }}"
+    dns_domain_name: "{{ instance_domain }}"
+    domain_admin_user: "{{ instance_domain }}\\{{ secrets['bind-username'] }}"
+    domain_admin_password: "{{ secrets['bind-password'] }}"
+    domain_log_path: "{{ ad_log_path }}"
+    install_dns: no
+    safe_mode_password: "{{ secrets['wind_password'] }}"
+    state: domain_controller
+    sysvol_path: "{{ ad_sysvol_path }}"
+  register: domain_state
+
+- name: "Invoking Reboot"
+  delegate_to: localhost
+  debug:
+    var: domain_state
+  when: domain_state.reboot_required
+
+- name: "Lookup Instance Facts"
+  delegate_to: "localhost"
+  include_vars:
+    file: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+  when: domain_state.reboot_required
+
+- name: "Reboot the Instance"
+  delegate_to: "localhost"
+  oracle.oci.oci_compute_instance_actions:
+    auth_type: "instance_principal"
+    instance_id: "{{ instance.id }}"
+    action: softreset
+  when: domain_state.reboot_required

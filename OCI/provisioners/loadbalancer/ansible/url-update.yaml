@@ -1,0 +1,19 @@
+---
+- hosts:
+    - uat
+    - shared
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    server_name: "{{ arg_server_name }}"
+    url_name: "{{ arg_url_name }}"
+    url_domain: "{{ arg_url_domain }}"
+    backendset_name: "{{ arg_backendset_name }}"
+  roles:
+    - common.oci-vars
+    - loadbalancer-facts
+    - role: letsencrypt-get-cert
+      vars:
+        cert_name: url_name
+        cert_domain: url_domain
+    - url-update

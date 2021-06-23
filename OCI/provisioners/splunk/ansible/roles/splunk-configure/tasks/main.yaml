@@ -1,0 +1,30 @@
+---
+- name: "Stop splunk service to make changes in conf files"
+  command:
+    cmd: "./splunk stop"
+    chdir: "/opt/splunk/bin"
+
+- name: "Allow port 80 and admin access"
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+  loop:
+    - { src: 'files/web.conf', dest: '/opt/splunk/etc/system/local/web.conf' }
+    
+- name: "Set LDAP configuration"
+  template:
+    src: "authentication.conf.j2"
+    dest: "/opt/splunk/etc/system/local/authentication.conf"
+    owner: root
+
+- name: "Configure the Splunk Index Server to receive data"
+  command:
+    cmd: "./splunk enable listen 9997"
+    chdir: "/opt/splunk/bin/"
+
+- name: "Start the Splunk server and accept License"
+  command:
+    cmd: "./splunk start --accept-license --answer-yes --no-prompt"
+    chdir: "/opt/splunk/bin/"
+

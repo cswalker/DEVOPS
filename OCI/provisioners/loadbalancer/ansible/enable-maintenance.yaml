@@ -1,0 +1,8 @@
+---
+- hosts:
+    - prod
+  vars:
+    listener_default_backend_set_name: "maintenance"
+  roles:
+    - routing-policy-maintenance
+    - upsert-listener

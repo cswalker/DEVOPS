@@ -1,0 +1,10 @@
+---
+- name: "Remove Cloudflare A Record"
+  cloudflare_dns:
+    zone: "my_domain.com"
+    type: A
+    record: "{{ record_name }}"
+    value: "{{ record_value }}"
+    state: absent
+    account_email: "{{ secrets['cloudflare_email'] }}"
+    account_api_token: "{{ secrets['cloudflare_api_key'] }}"

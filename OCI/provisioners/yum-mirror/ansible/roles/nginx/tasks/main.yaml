@@ -1,0 +1,32 @@
+---
+- name: "Install Nginx"
+  yum:
+    name: "nginx"
+    state: present
+    lock_timeout: 180
+
+- name: "Disable SELinux"
+  selinux:
+    state: disabled
+
+- name: "Configure Nginx IP Based Config"
+  template:
+    src: "repo.conf"
+    dest: "/etc/nginx/conf.d/repo.conf"
+    owner: "root"
+    group: "root"
+    lstrip_blocks: yes
+
+- name: "Configure Nginx Named Host Config"
+  template:
+    src: "named-repo.conf"
+    dest: "/etc/nginx/conf.d/named-repo.conf"
+    owner: "root"
+    group: "root"
+    lstrip_blocks: yes
+
+- name: "Restart Nginx"
+  service:
+    name: "nginx"
+    state: restarted
+    enabled: yes

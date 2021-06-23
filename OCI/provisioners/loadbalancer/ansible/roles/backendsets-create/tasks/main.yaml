@@ -1,0 +1,10 @@
+---
+- name: "Create Backend Sets"
+  oracle.oci.oci_loadbalancer_backend_set:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    name: "{{ item.name }}"
+    policy: "{{ item.policy }}"
+    health_checker: "{{ item.health_checker }}"
+  with_items: "{{ backend_sets }}"
+  loop_control:
+    label: "{{ item.name }}"

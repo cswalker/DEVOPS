@@ -1,0 +1,14 @@
+---
+- hosts:
+    - corp
+  gather_facts: no
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    server_name: "{{ arg_server_name }}"
+    remove_hostname: "{{ arg_remove_hostname }}"
+    jenkins_user: "{{ arg_jenkins_user }}"
+  roles:
+    - common.oci-vars
+    - common.vault-get-secrets
+    - remove-adobject

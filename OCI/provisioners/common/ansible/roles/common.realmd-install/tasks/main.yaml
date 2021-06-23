@@ -1,0 +1,11 @@
+---
+- name: "Install Realmd Package requirements"
+  yum:
+    name: ['sssd', 'realmd', 'oddjob', 'oddjob-mkhomedir', 'adcli', 'samba-common', 'samba-common-tools', 'krb5-workstation', 'openldap-clients', 'policycoreutils-python', 'python-pip']
+    state: present
+    lock_timeout: 180
+
+- name: "Install Python pexpect Framework"
+  pip:
+    name: "pexpect"
+    state: present

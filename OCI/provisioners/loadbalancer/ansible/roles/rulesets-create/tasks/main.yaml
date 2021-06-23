@@ -1,0 +1,19 @@
+---
+- name: "Create Rule Sets"
+  oracle.oci.oci_loadbalancer_rule_set:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    name: "http_to_https_redirect"
+    items:
+      - action: "REDIRECT"
+        conditions:
+          - attribute_name: "PATH"
+            attribute_value: "/"
+            operator: "FORCE_LONGEST_PREFIX_MATCH"
+        redirect_uri:
+          host: "{host}"
+          port: 443
+          path: "/{path}"
+          query: "?{query}"
+          protocol: "HTTPS"
+        response_code: 301
+    state: present

@@ -1,4 +1,0 @@
----
-sudoers:
-  groups:
-    - "it\\ prod\\ ops"

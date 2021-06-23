@@ -1,0 +1,11 @@
+---
+- hosts:
+    - uat
+    - prod
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    ip_address: "{{ arg_ip_address }}"
+    loadbalancer_id: "{{ arg_loadbalancer_id }}"
+  roles:
+    - remove-backend

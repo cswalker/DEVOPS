@@ -1,0 +1,51 @@
+---
+- name: "Launch instance"
+  delegate_to: localhost
+  oracle.oci.oci_compute_instance:
+    availability_domain: "{{ instance_ad }}"
+    compartment_id: "{{ compartments[env_type].compartment_ocid }}"
+    display_name: "{{ instance_hostname }}"
+    image_id: "{{ instance_image }}"
+    shape: "{{ instance_shape }}"
+    shape_config:
+      ocpus: "{{ instance_cpu }}"
+      memory_in_gbs: "{{ instance_memory }}"
+    create_vnic_details:
+      private_ip: "{{ instance_ip }}"
+      assign_public_ip: false
+      hostname_label: "{{ instance_hostname }}"
+      subnet_id: "{{ instance_subnet_id }}"
+    metadata:
+      ssh_authorized_keys: "{{ secrets['OCI_pubkey'] }}"
+    defined_tags: {
+      'Common': {
+        'CreatedBy': "{{ jenkins_user }}",
+        'EnvironmentType': "{{ env_type }}",
+        'EnvironmentName': "{{ env_name }}",
+      },
+      'Instances': {
+        'ServerType': "dns",
+        'ServerName': "{{ instance_hostname }}",
+      }
+    }
+  register: create_result
+
+- name: "Print instance details"
+  delegate_to: localhost
+  ansible.builtin.debug:
+    msg: "Launched a new instance {{ create_result }}"
+
+- set_fact:
+    instance_private_ip: "{{ create_result.instance.primary_private_ip }}"
+
+- name: "Create Instance Data Directory"
+  delegate_to: localhost
+  ansible.builtin.file:
+    path: "{{ metadata_base_path }}"
+    state: directory
+
+- name: "Save Instance Facts"
+  delegate_to: localhost
+  ansible.builtin.template:
+    src: "instance-facts.j2"
+    dest: "{{ metadata_base_path }}/{{ server_name }}.yaml"

@@ -1,0 +1,5 @@
+# Apache Maven Environment Variables
+# MAVEN_HOME for Maven 1 - M2_HOME for Maven 2
+export MAVEN_HOME=/opt/apache-maven/apache-maven-{{ maven_version }}
+export M2_HOME=/opt/apache-maven/apache-maven-{{ maven_version }}
+export PATH=${M2_HOME}/bin:${PATH}

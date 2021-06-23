@@ -1,0 +1,6 @@
+---
+- name: "Remove Routing Policy"
+  oracle.oci.oci_load_balancer_routing_policy:
+    name: "{{ routing_policy_name }}"
+    load_balancer_id: "{{ loadbalancer_ocid }}"
+    state: absent

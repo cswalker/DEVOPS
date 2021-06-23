@@ -1,0 +1,33 @@
+---
+- name: "Get Load Balancer Facts"
+  oracle.oci.oci_loadbalancer_load_balancer_facts:
+    compartment_id: "{{ compartments[env_type].compartment_ocid }}"
+    display_name: "{{ env_name }}-{{ server_name }}"
+    auth_type: "instance_principal"
+  retries: 3
+  delay: 15
+  register: loadbalancer_facts_lookup
+  delegate_to: localhost
+  become: no
+
+- name: "Debug Load Balancer Facts"
+  debug:
+    var: loadbalancer_facts_lookup
+
+- name: "Set Load Balancer Facts"
+  set_fact:
+    loadbalancer_facts: "{{ item }}"
+  with_items: "{{ loadbalancer_facts_lookup.load_balancers }}"
+  loop_control:
+    label: "{{ item.display_name }}"
+  when:
+    - item.defined_tags.Common is defined
+    - item.defined_tags.Common.EnvironmentType is defined and item.defined_tags.Common.EnvironmentType == env_type
+    - item.defined_tags.Common.EnvironmentName is defined and item.defined_tags.Common.EnvironmentName == env_name
+    - item.defined_tags.Instances is defined
+    - item.defined_tags.Instances.ServerName is defined and item.defined_tags.Instances.ServerName == server_name
+    - item.defined_tags.Instances.ServerType is defined and (item.defined_tags.Instances.ServerType == 'loadbalancer')
+
+- name: "Debug Load Balancer Facts"
+  debug:
+    var: loadbalancer_facts

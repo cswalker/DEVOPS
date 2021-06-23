@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: common.vault-get-secrets
+  - role: common.oci-vars

@@ -1,0 +1,72 @@
+---
+- name: "Lookup Instance Facts"
+  ansible.builtin.include_vars:
+    file: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+    name: instance_info
+
+- name: "Output Instance Facts"
+  ansible.builtin.debug:
+    msg: "{{ instance_info }}"
+
+- name: "lookup Volume Facts"
+  ansible.builtin.include_vars:
+    file: "{{ metadata_base_path }}/volumes/{{ server_name }}-bind9.yaml"
+    name: volume_info
+
+- name: "Output Volume Facts"
+  ansible.builtin.debug:
+    msg: "{{ volume_info }}"
+
+- name: "Attach Volume to Instance"
+  delegate_to: localhost
+  become: no
+  oracle.oci.oci_compute_volume_attachment:
+    instance_id: "{{ instance_info.instance.id }}"
+    type: iscsi
+    compartment_id: "{{ volume_info.volume.compartment_id }}"
+    display_name: "{{ volume_info.volume.display_name }}"
+    volume_id: "{{ volume_info.volume.id }}"
+    device: "/dev/oracleoci/oraclevdb"
+    state: present
+    auth_type: "instance_principal"
+  register: volume_attach_result
+
+- name: "Print Volume Attachment Result"
+  delegate_to: localhost
+  become: no
+  ansible.builtin.debug:
+    var: volume_attach_result
+
+- name: "Save Volume Facts"
+  delegate_to: localhost
+  become: no
+  ansible.builtin.template:
+    src: "volume-facts.j2"
+    dest: "{{ metadata_base_path }}/volumes/{{ server_name }}-bind9.yaml"
+
+- name: "Run Volume Attachment Commands"
+  become: yes
+  become_user: root
+  command: "{{ item }}"
+  args:
+    creates: "{{ volume_attach_result.volume_attachment.device }}1"
+  with_items: "{{ volume_attach_result.volume_attachment.iscsi_attach_commands }}"
+
+- name: "Mount Volume"
+  become: yes
+  become_user: root
+  ansible.posix.mount:
+    path: "/mnt/named"
+    src: "{{ volume_attach_result.volume_attachment.device }}1"
+    fstype: "ext3"
+    opts: "defaults,_netdev,nofail"
+    state: mounted
+
+- name: "Set Permissions for Volume"
+  become: yes
+  become_user: root
+  ansible.builtin.file:
+    path: "/mnt/named"
+    owner: "root"
+    group: "named"
+    mode: "775"

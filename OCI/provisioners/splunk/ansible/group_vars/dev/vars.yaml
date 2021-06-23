@@ -1,0 +1,5 @@
+---
+instance_compartment: "{{ compartments.dev.compartment_ocid }}" #dev Compartment
+instance_subnet_id: "{{ regions.ashburn.dev.vcn.subnets.ctr_ocid }}" #dev CTR Subnet
+
+env_type: "dev"

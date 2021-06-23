@@ -1,0 +1,6 @@
+---
+#https://blogs.oracle.com/cloud-infrastructure/announcing-parallel-file-tools-for-file-storage
+- name: "Install Parallel File Tools"
+  yum:
+    name: "fss-parallel-tools"
+    state: present

@@ -1,0 +1,5 @@
+---
+secrets: {
+  cloudflare_email: "shared",
+  cloudflare_api_key: "shared",
+}

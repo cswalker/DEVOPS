@@ -1,0 +1,20 @@
+---
+- hosts:
+    - dev
+    - qa
+    - shared
+    - prod
+  become: yes
+  become_user: root
+  vars:
+    block_volume_restore_env_type: "{{ arg_block_volume_restore_env_type }}"
+    block_volume_restore_env_name: "{{ arg_block_volume_restore_env_name }}"
+    block_volume_restore_ad: "{{ arg_block_volume_restore_ad }}"
+    block_volume_restore_display_name: "{{ arg_block_volume_restore_display_name }}"
+    block_volume_restore_volume_id: "{{ arg_block_volume_restore_volume_id }}"
+    block_volume_restore_compartment_id: "{{ arg_block_volume_restore_compartment_id }}"
+  roles:
+    - common.oci-vars
+    - common.block-volume-restore
+  environment:
+    OCI_ANSIBLE_AUTH_TYPE: "instance_principal"

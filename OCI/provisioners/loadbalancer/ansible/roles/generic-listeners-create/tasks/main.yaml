@@ -1,0 +1,13 @@
+---
+- name: "Create Generic Listeners"
+  oracle.oci.oci_loadbalancer_listener:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    name: "{{ item.name }}"
+    default_backend_set_name: "{{ item.default_backend_set_name }}"
+    port: "{{ item.port }}"
+    protocol: "{{ item.protocol }}"
+    rule_set_names: "{{ item.rule_set_names | default(omit) }}"
+    hostname_names: "{{ item.hostname_names | default(omit) }}"
+    ssl_configuration: "{{ item.ssl_configuration | default(omit)}}"
+    state: present
+  with_items: "{{ generic_listeners }}"

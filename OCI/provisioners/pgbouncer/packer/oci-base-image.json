@@ -1,0 +1,47 @@
+{
+    "variables": {
+        "availability_domain": "sSxD:US-ASHBURN-AD-1",
+        "base_image_ocid": "",
+        "compartment_ocid": "",
+        "subnet_ocid": "",
+        "version": ""
+    },
+    "builders": [
+        {
+            "use_instance_principals": "true",
+            "availability_domain": "{{ user `availability_domain` }}",
+            "base_image_ocid": "{{ user `base_image_ocid` }}",
+            "compartment_ocid": "{{ user `compartment_ocid` }}",
+            "subnet_ocid": "{{ user `subnet_ocid` }}",
+            "image_name": "PgBouncerBaseImage",
+            "instance_name": "PgBouncerBaseBuilder",
+            "shape": "VM.Standard2.2",
+            "ssh_username": "opc",
+            "use_private_ip": "true",
+            "type": "oracle-oci",
+            "defined_tags": {
+                "Images": {
+                    "ServerType": "pgbouncer",
+                    "Version": "{{ user `version` }}",
+                    "IsLatest": "false",
+                    "IsStable": "false"
+                }
+            }
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "ansible",
+            "playbook_file": "provisioners/pgbouncer/ansible/base.yaml",
+            "groups": ["base"],
+            "user": "opc"
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "manifest",
+            "output": "manifest.json",
+            "strip_path": true
+        }
+    ]
+}

@@ -1,0 +1,55 @@
+---
+loadbalancer_compartment_id: "{{ compartments.prod.compartment_ocid }}"
+loadbalancer_subnet_ids:
+  - "{{ regions.ashburn.prod.vcn.subnets.pub_ocid }}"
+
+metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ client_name }}"
+
+loadbalancer_defined_tags: {
+  'Common': {
+    'CreatedBy': "{{ jenkins_user }}",
+    'EnvironmentType': "{{ env_type }}",
+    'EnvironmentName': "{{ client_name }}",
+  },
+  'LoadBalancers': {
+    'Type': "{{ loadbalancer_type }}",
+    'Visibility': "public",
+  }
+}
+loadbalancer_display_name: "{{ client_name }}_{{ loadbalancer_type }}"
+loadbalancer_facts_path: "{{ metadata_base_path }}/{{ loadbalancer_display_name }}.yaml"
+loadbalancer_shape: "400Mbps"
+
+app_loadbalancer_backendset_name: "{{ release_version }}"
+app_loadbalancer_backendset_policy: "ROUND_ROBIN"
+app_loadbalancer_backendset_health_checker:
+  port: 443
+  protocol: "HTTP"
+  return_code: 200
+  url_path: "/monitor.cfm"
+
+
+backend_sets:
+  - name: "backend_servers_set"
+    policy: "ROUND_ROBIN"
+    health_checker:
+      port: 80
+      protocol: "HTTP"
+      return_code: 200
+      url_path: "/monitor.cfm"
+
+default_urls:
+  - name: "wildcard.{{ public_domain_name }}"
+    domain: "*.{{ public_domain_name }}"
+  - name: "wildcard.{{ profile }}.my_domain.com"
+    domain: "*.{{ profile }}.my_domain.com"
+  - name: "wildcard.my_domain.com"
+    domain: "*.my_domain.com"
+
+generic_listeners:
+  - name: "http_redirect"
+    port: "80"
+    protocol: "HTTP"
+    default_backend_set_name: "backend_servers_set"
+    rule_set_names:
+      - "http_to_https_redirect"

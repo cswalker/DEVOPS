@@ -1,6 +1,0 @@
----
-# default backup policy OCIDs
-backup_policy:
-  "gold": "Add Backup Policy OCID Here"
-  "silver": "Add Backup Policy OCID Here"
-  "bronze": "Add Backup Policy OCID Here"

@@ -1,0 +1,11 @@
+---
+- hosts:
+    - dnsmadeeasy
+  vars:
+    record_name: "{{ arg_record_name }}"
+    record_value: "{{ arg_record_value }}"
+    record_type: "{{ arg_record_type }}"
+  roles:
+    - common.oci-vars
+    - common.vault-get-secrets
+    - remove-dns-dnsmadeeasy

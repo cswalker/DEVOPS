@@ -1,0 +1,13 @@
+---
+volume:
+  display_name: "{{ volume_info.volume.display_name }}"
+  id: "{{ volume_info.volume.id }}"
+  size_in_gbs: "{{ volume_info.volume.size_in_gbs }}"
+  compartment_id: "{{ volume_info.volume.compartment_id }}"
+  availability_domain: "{{ volume_info.volume.availability_domain }}"
+volume_attachment:
+  id: "{{ volume_attach_result.volume_attachment.id }}"
+  device: "{{ volume_attach_result.volume_attachment.device }}"
+  instance_id: "{{ volume_attach_result.volume_attachment.instance_id }}"
+  iscsi_attach_commands: "{{ volume_attach_result.volume_attachment.iscsi_attach_commands }}"
+  iscsi_detach_commands: "{{ volume_attach_result.volume_attachment.iscsi_detach_commands }}"

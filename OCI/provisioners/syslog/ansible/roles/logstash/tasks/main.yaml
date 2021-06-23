@@ -1,0 +1,13 @@
+---
+#Logstash installation
+- name: "Install the Logstash RPM"
+  yum:
+    name: "https://logstash.com/logstash-7.8.0.rpm"
+    state: present
+    lock_timeout: 180
+
+- name: "Start Logstash"
+  service:
+   name: "logstash"
+   state: started
+   enabled: yes

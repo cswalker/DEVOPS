@@ -1,0 +1,14 @@
+---
+- name: "Update Backend '{{ ip_address }}:{{ port }}' to set '{{ backendset_name }}'"
+  oracle.oci.oci_loadbalancer_backend:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    backend_set_name: "{{ backendset_name }}"
+    key_by: "ip_address,port"
+    ip_address: "{{ ip_address }}"
+    port: "{{ port }}"
+    backup: "{{ backup }}"
+    drain: "{{ drain }}"
+    offline: "{{ offline }}"
+    state: "present"
+  delegate_to: localhost
+  become: no

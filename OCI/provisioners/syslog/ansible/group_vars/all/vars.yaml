@@ -1,0 +1,36 @@
+---
+ansible_ssh_user: "opc"
+ansible_ssh_private_key_file: "~/.ssh/oci_private_key"
+
+# provision
+instance_ad: "sSxD:US-ASHBURN-AD-1"
+instance_shape: "VM.Standard.E2.1"
+instance_hostname: "{{ env_name }}-{{ server_name }}"
+metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ env_name }}/"
+
+#vault
+secrets: {
+  kibana_es_user: "shared",
+  kibana_es_pass: "shared",
+}
+#Kibana section
+kibana_version: "7.x"
+kibana_elasticsearch_url: "http://localhost:9200"
+
+# configure section
+firewall_allow_ports: 
+  - "80/tcp"
+  - "443/tcp"
+  - "53/tcp"
+  - "53/udp"
+  - "389/tcp"
+  - "389/udp"
+  - "636/tcp"
+  - "636/udp"
+  - "88/tcp"
+  - "88/udp"
+  - "445/tcp"
+  - "445/udp"
+  - "446/tcp"
+  - "446/udp"
+  - "3268/tcp"

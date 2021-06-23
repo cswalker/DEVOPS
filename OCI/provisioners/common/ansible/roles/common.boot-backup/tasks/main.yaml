@@ -1,0 +1,18 @@
+---
+- name: "Get instance facts"
+  oracle.oci.oci_compute_boot_volume_attachment_facts:
+    instance_id: "{{ instance_id }}"
+    compartment_id: "{{ compartment_id }}"
+    availability_domain: "{{ ad_id }}"
+  register: instance_facts_result
+  delegate_to: localhost
+
+- name: "Print instance facts"
+  debug:
+    var: instance_facts_result.boot_volume_attachments[0].boot_volume_id
+
+- name: "Pet boot volume backup policy"
+  oracle.oci.oci_blockstorage_volume_backup_policy_assignment:
+    asset_id: "{{ instance_facts_result.boot_volume_attachments[0].boot_volume_id }}"
+    policy_id: "{{ tenancy.block_storage.backup_policies[policy_type] }}"
+  delegate_to: localhost

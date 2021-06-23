@@ -1,0 +1,8 @@
+---
+domain: "{{ env_name }}-{{ server_name }}.shared-resources.my.domain"
+
+mounts:
+  - src: "10.10.80.30:/yum"
+    path: "/mnt/yumdata"
+    opts: "rw,bg,hard,rsize=4096,wsize=4096,nointr,suid,actimeo=120,timeo=120"
+    fstype: "nfs"

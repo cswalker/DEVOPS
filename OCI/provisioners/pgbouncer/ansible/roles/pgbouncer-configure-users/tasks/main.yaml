@@ -1,0 +1,6 @@
+---
+- name: "Install pgbouncer userlist"
+  copy:
+    src: "pgbouncer_users.txt"
+    dest: "/etc/pgbouncer/pgbouncer_users.txt"
+  notify: "restart pgbouncer"

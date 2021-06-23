@@ -1,0 +1,70 @@
+---
+- name: "Set the certificate secret names"
+  set_fact:
+    privkey_secret_name: "certificates_{{ url_name }}_privkey"
+    cert_secret_name: "certificates_{{ url_name }}_cert"
+
+- set_fact:
+    secrets: "{{
+            {
+              privkey_secret_name: 'shared',
+              cert_secret_name: 'shared',
+            }
+         }}"
+
+- name: "Lookup cert info for {{ url_name }}"
+  include_role:
+    name: "vault-get-secrets"
+    public: true # for access to secrets dict
+
+- set_fact:
+    privkey: "{{ secrets[privkey_secret_name] }}"
+    cert: "{{ secrets[cert_secret_name] }}"
+
+- name: "Determine Expiry Date of Certificate"
+  shell:
+    cmd: "openssl x509 -enddate -noout -in <(echo '{{ cert }}')"
+    executable: "/bin/bash"
+  register: cert_expiry
+
+- name: "Debug cert expiry"
+  debug:
+    msg: "Cert expiration date for humans: {{ cert_expiry.stdout }}"
+
+- name: "Format Cert Expiration for loadbalancer cert name"
+  shell: "date -d \"$(echo '{{ cert_expiry.stdout }}' | cut -d'=' -f2)\" '+%Y-%m-%d_%H%M%S'"
+  register: formatted_cert_expiry
+
+- name: "Debug cert expiry"
+  debug:
+    msg: "Cert expiration date: {{ formatted_cert_expiry.stdout }}"
+
+- name: "Add certificate to loadbalancer for {{ url_name }}"
+  oracle.oci.oci_loadbalancer_certificate:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    certificate_name: "{{ url_name }}_{{ formatted_cert_expiry.stdout }}"
+    public_certificate: "{{ cert }}"
+    private_key: "{{ privkey }}"
+    state: present
+
+- name: "Add hostname to loadbalancer for {{ url_name }}"
+  oracle.oci.oci_loadbalancer_hostname:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    name: "{{ url_name }}"
+    hostname: "{{ url_domain }}"
+    state: present
+
+- name: "Add listener to loadbalancer for {{ url_name }}"
+  oracle.oci.oci_loadbalancer_listener:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    name: "{{ url_name | replace('.', '_') }}" # period character is not allowed in listener names
+    default_backend_set_name: "{{ default_backend_set_name }}"
+    port: "443"
+    protocol: "HTTP"
+    hostname_names:
+      - "{{ url_name }}"
+    ssl_configuration:
+      certificate_name: "{{ url_name }}_{{ formatted_cert_expiry.stdout }}"
+    connection_configuration:
+      idle_timeout: 900
+    state: present

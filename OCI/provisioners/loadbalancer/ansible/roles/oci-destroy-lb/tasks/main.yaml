@@ -1,0 +1,34 @@
+---
+- name: "Check Load Balancer Details Exist"
+  stat:
+    path: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+  register: lb_stat
+
+- name: "Fail if Environment Stats Don't Exist"
+  fail:
+    msg: "{{ env_name }} loadbalancer does not exist"
+  when: lb_stat.stat.exists == false
+
+- name: "Lookup Instance Facts"
+  include_vars:
+    file: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+
+- name: "Output Instance Facts"
+  debug:
+    msg: "{{ loadbalancer }}"
+
+- name: "Delete Load Balancer"
+  oci_load_balancer:
+    load_balancer_id: "{{ loadbalancer.id }}"
+    auth_type: "instance_principal"
+    state: "absent"
+
+- name: "Remove the Load Balancer Info"
+  file:
+    path: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+    state: "absent"
+
+- name: "Remove the Certs"
+  file:
+    path: "{{ metadata_base_path }}/loadbalancer-certs"
+    state: "absent"

@@ -1,0 +1,8 @@
+---
+sudoers:
+  groups:
+    - "it\\ production\\ operations"
+    - "it"
+    - "dev"
+    - "user\\ accessability"
+    - "development"

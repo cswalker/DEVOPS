@@ -1,0 +1,57 @@
+options {
+        directory "/mnt/named";
+        dump-file "/mnt/named/data/cache_dump.db";
+        statistics-file "/mnt/named/data/named_stats.txt";
+        memstatistics-file "/mnt/named/data/named_mem_stats.txt";
+        listen-on port 53 { any; };
+        allow-query     { any; };
+        recursion yes;
+};
+#key authentication
+key "{{ zone }}." {
+    algorithm hmac-md5;
+    secret "{{ key_secret }}";
+};
+#authoritive forward zone
+zone "{{ zone }}" {
+        type slave;
+        file "/mnt/named/slaves/forward.{{ zone }}.zone";
+        masters { {{ dns_primary_ip }}; };
+        allow-update-forwarding { key "{{ zone }}."; };
+};
+#reverse authoritive zone
+zone "{{ pod_cidr }}.in-addr.arpa"{
+        type slave;
+        file "/mnt/named/slaves/reverse.{{ zone }}.zone";
+        masters { {{ dns_primary_ip}}; };
+        allow-update-forwarding { key "{{ zone }}."; };
+
+};
+{% if compartment_forwarders is defined and compartment_forwarders is iterable %}
+{%  for pod in compartment_forwarders %}
+#{{ pod.fqdn }} forwarder
+zone "{{ pod.fqdn }}" {
+        type forward;
+        forward only;
+        forwarders { {{ pod.primary_ip }}; {{ pod.secondary_ip}}; };
+};
+{%  endfor %}
+{% endif %}
+#OCI forwarder
+zone "{{ forwarder }}.oraclevcn.com" {
+        type forward;
+        forward only;
+        forwarders { 169.254.169.254; };
+};
+#Create Logging
+logging {
+channel bindlog {
+file "/mnt/named/named.log" versions 3 size 5m;
+print-time yes;
+print-category yes;
+print-severity yes;
+};
+category xfer-out { bindlog;};
+category xfer-in { bindlog;};
+category security { bindlog;};
+};

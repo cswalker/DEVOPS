@@ -1,0 +1,24 @@
+---
+maven_version: "3.6.3"
+jmeter_version: "apache-jmeter-5.2.1"
+jmeter_dir: "/opt/jmeter/{{ jmeter_version }}/"
+
+repository_path: "/opt/swf/load-test"
+
+jmeter_plugins:
+  - name: "3 Basic Graphs"
+    file_path: "URL TO PLUGIN"
+
+ansible_ssh_user: "opc"
+ansible_ssh_private_key_file: "~/.ssh/oci_private_key"
+
+default_instance_image: "{{ regions.ashburn.default_images.ol7_ocid }}"
+instance_hostname: "{{ env_name }}-{{ server_name }}"
+metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ env_name }}/"
+
+jmeter_target_domain: "{{ env_type }}.my.domain"
+
+secrets: {
+  bind-username: "shared",
+  bind-password: "shared"
+}

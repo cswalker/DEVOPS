@@ -1,0 +1,10 @@
+---
+- hosts:
+    - "{{ arg_env_type }}_{{ arg_instance_role }}"
+  vars:
+    server_name: "{{ arg_server_name }}"
+  become: yes
+  become_user: root
+  roles:
+    - common.oci-vars
+    - configure-dns

@@ -1,0 +1,10 @@
+---
+- hosts:
+    - localhost
+  become: yes
+  become_user: "root"
+  roles:
+    - common.vault-get-secrets
+    - certbot-install
+  environment:
+    OCI_ANSIBLE_AUTH_TYPE: "instance_principal"

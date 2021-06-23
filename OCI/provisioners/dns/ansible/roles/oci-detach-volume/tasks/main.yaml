@@ -1,0 +1,47 @@
+---
+- name: "lookup Volume Facts"
+  delegate_to: localhost
+  ansible.builtin.include_vars:
+    file: "{{ metadata_base_path }}/volumes/{{ server_name }}-bind9.yaml"
+    name: volume_info
+
+- name: "Output Volume Facts"
+  ansible.builtin.debug:
+    msg: "{{ volume_info }}"
+
+- name: "Stop bind9 Service"
+  ansible.builtin.systemd:
+    name: "named"
+    state: stopped
+  become: yes
+  become_user: root
+
+- name: "Unmount bind9 Volume"
+  ansible.posix.mount:
+    path: "/mnt/named"
+    state: unmounted
+  become: yes
+  become_user: root
+  ignore_errors: "yes"
+
+- name: "Remove bind9 from fstab"
+  ansible.posix.mount:
+    path: "/mnt/named"
+    state: absent
+  become: yes
+  become_user: root
+
+- name: "Run Volume Detach Commands"
+  command: "{{ item }}"
+  args:
+    removes: "{{ volume_info.volume_attachment.device }}"
+  become: yes
+  become_user: root
+  with_items:  "{{ volume_info.volume_attachment.iscsi_detach_commands }}"
+  ignore_errors: "yes"
+
+- name: "Detach Volume from Instance"
+  delegate_to: localhost
+  oracle.oci.oci_compute_volume_attachment:
+    volume_attachment_id: "{{ volume_info.volume_attachment.id }}"
+    state: absent

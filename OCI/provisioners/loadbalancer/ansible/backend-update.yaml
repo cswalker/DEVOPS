@@ -1,0 +1,21 @@
+---
+- hosts:
+    - dev
+    - qa
+    - uat
+    - prod
+    - shared
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    server_name: "{{ arg_server_name }}"
+    backendset_name: "{{ arg_backendset_name }}"
+    ip_address: "{{ arg_ip_address }}"
+    port: "{{ arg_port }}"
+    backup: "{{ arg_backup | default(false) }}"
+    drain: "{{ arg_drain | default(false) }}"
+    offline: "{{ arg_offline | default(false) }}"
+  roles:
+    - common.oci-vars
+    - loadbalancer-facts
+    - backend-update

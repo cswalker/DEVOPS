@@ -1,0 +1,20 @@
+---
+- name: "Remove A Record"
+  nsupdate:
+    key_name: "{{ zone }}."
+    key_secret: "{{ secrets['dnskey'] }}"
+    server: "{{ dns_primary_ip }}"
+    zone: "{{ zone }}."
+    record: "{{ record }}"
+    type: "A"
+    state: absent
+
+- name: "Remove PTR record"
+  nsupdate:
+    key_name: "{{ zone }}."
+    key_secret: "{{ secrets['dnskey'] }}"
+    server: "{{ dns_primary_ip }}"
+    record: "{{ instance_private_ip | ipaddr('revdns') }}"
+    type: "PTR"
+    state: absent
+  when: "'*' not in record"

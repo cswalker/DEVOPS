@@ -1,0 +1,28 @@
+---
+loadbalancer_compartment_id: "{{ compartments[env_type].compartment_ocid }}"
+loadbalancer_subnet_id: "{{ regions.ashburn[env_type]].vcn.subnets.pub_ocid }}"
+
+backend_sets:
+  - name: "backend_servers_set"
+    policy: "ROUND_ROBIN"
+    health_checker:
+      port: 80
+      protocol: "HTTP"
+      return_code: 200
+      url_path: "/monitor.cfm"
+
+default_urls:
+  - name: "wildcard_{{ public_domain_name.replace('.', '_') }}"
+    domain: "*.{{ public_domain_name }}"
+  - name: "wildcard_{{ profile.replace('.', '_') }}_my_domain_com"
+    domain: "*.{{ profile }}.my_domain.com"
+  - name: "wildcard_uat_my_domain_com"
+    domain: "*.uat.my_domain.com"
+
+generic_listeners:
+  - name: "http_redirect"
+    port: "80"
+    protocol: "HTTP"
+    default_backend_set_name: "backend_servers_set"
+    rule_set_names:
+      - "http_to_https_redirect"

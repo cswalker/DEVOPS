@@ -1,0 +1,55 @@
+---
+- name: "Install Nginx"
+  yum:
+    name: "nginx"
+    state: present
+    lock_timeout: 180
+
+- name: "Disable SELinux"
+  selinux:
+    state: disabled
+
+- name: "Configure Nginx Config"
+  copy:
+    src: "nginx.conf"
+    dest: "/etc/nginx/nginx.conf"
+    owner: "root"
+    group: "root"
+
+- name: "Configure Nginx Server Config(s)"
+  template:
+    src: "server.conf.j2"
+    dest: "/etc/nginx/conf.d/{{ item.dest_config }}.conf"
+    owner: "root"
+    group: "root"
+    lstrip_blocks: yes
+  with_items: "{{ nginx_configs }}"
+
+- name: "Configure Nginx Image Redirect Config"
+  copy:
+    src: "image-redirects.conf"
+    dest: "/etc/nginx/image-redirects.conf"
+    owner: "root"
+    group: "root"
+
+- name: "Create Nginx Home Directories"
+  file:
+    path: "{{ item.root }}"
+    state: directory
+    owner: "me"
+    group: "me"
+  with_items: "{{ nginx_configs }}"
+
+- name: "Create Nginx index.html for each server"
+  template:
+    src: "index.html.j2"
+    dest: "{{ item.root }}/index.html"
+    owner: "me"
+    group: "me"
+  with_items: "{{ nginx_configs }}"
+
+- name: "Restart Nginx"
+  service:
+    name: "nginx"
+    state: restarted
+    enabled: yes

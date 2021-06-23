@@ -1,3 +1,0 @@
-# provision
-instance_subnet_id: "{{ regions.ashburn.qa.vcn.subnets.svc_ocid }}"
-instance_compartment: "{{ compartments.qa.compartment_ocid }}"

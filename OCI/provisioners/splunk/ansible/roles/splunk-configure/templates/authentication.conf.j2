@@ -1,0 +1,29 @@
+[DC-DC]
+SSLEnabled = 1
+anonymous_referrals = 1
+bindDN = {{ secrets['bind-username'] }}
+bindDNpassword = {{ secrets['bind-password'] }}
+charset = utf8
+emailAttribute = mail
+groupBaseDN = cn=users,dc=my,dc=domain
+groupMappingAttribute = dn
+groupMemberAttribute = member
+groupNameAttribute = cn
+host = dc-01.my.domain
+nestedGroups = 0
+network_timeout = 20
+port = 636
+realNameAttribute = displayname
+sizelimit = 1000
+timelimit = 15
+userBaseDN = cn=users,dc=my,dc=domain
+userNameAttribute = samaccountname
+
+[authentication]
+authSettings = DC-01
+authType = LDAP
+
+[roleMap_DC-01]
+admin = SplunkAdmins
+power = SplunkPower
+user = SplunkUsers

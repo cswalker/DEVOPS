@@ -1,0 +1,19 @@
+- block:
+    - name: "Get Java Home"
+      shell: "ls -la /etc/alternatives/java | grep -oP '(?<=-> ).*(?=/bin/java)'"
+      register: java_home_output
+
+    - name: "Set java_home fact"
+      set_fact:
+        java_home: "{{ java_home_output.stdout }}"
+  when: not is_java_11
+
+- block:
+    - name: "Get Java Home 11"
+      shell: "ls -la /etc/alternatives/java_sdk_11 | grep -oP '(?<=-> ).*'"
+      register: java_home_output
+
+    - name: "Set java_home fact"
+      set_fact:
+        java_home: "{{ java_home_output.stdout }}"
+  when: is_java_11

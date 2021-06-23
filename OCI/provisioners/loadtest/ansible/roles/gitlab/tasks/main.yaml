@@ -1,0 +1,22 @@
+---
+- name: "Create Root SSH Folder"
+  file:
+    path: "/root/.ssh"
+    owner: "root"
+    group: "root"
+    state: directory
+    mode: "0600"
+
+- name: "Add Gitlab Deploy Key"
+  copy:
+    src: "deploy_key"
+    dest: "/root/.ssh/id_rsa"
+    owner: "root"
+    group: "root"
+    mode: "0600"
+
+- name: "Add Gitlab to Known Hosts"
+  known_hosts: 
+    path: "/root/.ssh/known_hosts"
+    name: "gitlab.my.domain"
+    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa gitlab.my.domain') }}"

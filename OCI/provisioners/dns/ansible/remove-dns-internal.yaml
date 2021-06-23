@@ -1,0 +1,12 @@
+---
+- hosts:
+    - "{{ arg_env_type }}_{{ arg_instance_role }}"
+  become: yes
+  become_user: root
+  vars:
+    record: "{{ arg_record }}"
+    instance_private_ip: "{{ arg_instance_private_ip }}"
+  roles:
+    - common.oci-vars
+    - common.vault-get-secrets
+    - remove-dns-internal

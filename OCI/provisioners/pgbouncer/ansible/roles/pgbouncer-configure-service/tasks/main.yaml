@@ -1,0 +1,6 @@
+---
+- name: "Install customized pgbouncer.service file"
+  copy:
+    src: "pgbouncer.service"
+    dest: "/usr/lib/systemd/system/pgbouncer.service"
+  notify: "restart pgbouncer"

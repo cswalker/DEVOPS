@@ -1,0 +1,13 @@
+---
+- name: "Create me Group"
+  group:
+    name: "me"
+    state: present
+
+- name: "Create me User"
+  user:
+    name: "me"
+    group: "me"
+    shell: "/bin/bash"
+    home: "/home/me"
+    create_home: yes

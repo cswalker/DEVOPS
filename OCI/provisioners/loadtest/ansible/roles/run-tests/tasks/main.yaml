@@ -1,0 +1,5 @@
+---
+- name: "Clean and verify with Maven"
+  shell: ". ~/.bash_profile && mvn clean verify -P {{ jmeter_maven_profile }} -DserverName={{ jmeter_app_server_name }} -DbaseUrl={{ jmeter_target_domain }} -DthreadCount={{ jmeter_thread_count }} -DrampUpInSecs={{ jmeter_ramp_up_in_seconds }} -DloopCount={{ jmeter_loop_count }}"
+  args:
+    chdir: "{{ repository_path }}"

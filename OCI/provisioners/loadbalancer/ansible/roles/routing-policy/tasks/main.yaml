@@ -1,0 +1,14 @@
+---
+- name: "Create or update routing policy"
+  oracle.oci.oci_load_balancer_routing_policy:
+    auth_type: "instance_principal"
+    load_balancer_id: "{{ loadbalancer_ocid }}"
+    name: "{{ routing_policy_name }}"
+    condition_language_version: "V1"
+    state: "present"
+    rules:
+    - name: "{{ routing_policy_name }}"
+      condition: "all(http.request.cookies[(i 'RELEASE_VERSION')] eq (i '{{ routing_version }}'))"
+      actions:
+      - name: "FORWARD_TO_BACKENDSET"
+        backend_set_name: "{{ routing_version }}"

@@ -1,0 +1,13 @@
+---
+- hosts:
+    - dev
+    - qa
+    - uat
+    - prod
+    - shared
+  become: yes
+  become_user: root
+  roles:
+    - common.oci-vars
+    - common.vault-get-secrets
+    - checkmk-configure

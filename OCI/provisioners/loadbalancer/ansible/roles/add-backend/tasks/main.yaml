@@ -1,0 +1,13 @@
+---
+- name: "Update Load Balancer"
+  oci_load_balancer_backend_set:
+    id: "{{ loadbalancer_id }}"
+    name: "backend_servers_set"
+    auth_type: "instance_principal"
+    session_persistence_configuration:
+      cookie_name: "*"
+    backends:
+      - ip_address: "{{ ip_address }}"
+        port: 80
+    purge_backends: no
+    state: "present"

@@ -1,0 +1,33 @@
+---
+- name: "Output use_tx_pool_mode"
+  debug:
+    msg: "{{ use_tx_pool_mode }}"
+
+- name: "Install pgbouncer.ini"
+  template:
+    src: "pgbouncer_{{ env_type }}.ini.j2"
+    dest: "/etc/pgbouncer/pgbouncer.ini"
+    lstrip_blocks: yes
+
+- name: "Install pg_hba.conf"
+  template:
+    src: "pg_hba.conf.j2"
+    dest: "/etc/pgbouncer/pg_hba.conf"
+    lstrip_blocks: yes
+
+- name: "Install pgbouncer userlist"
+  copy:
+    src: "pgbouncer_users.txt"
+    dest: "/etc/pgbouncer/pgbouncer_users.txt"
+
+- name: "Install customized pgbouncer.service file"
+  copy:
+    src: "pgbouncer.service"
+    dest: "/usr/lib/systemd/system/pgbouncer.service"
+
+- name: "Restart pgbouncer service"
+  service:
+    name: "pgbouncer"
+    state: restarted
+    daemon_reload: yes
+    enabled: yes

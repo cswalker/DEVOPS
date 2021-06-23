@@ -1,0 +1,21 @@
+---
+- hosts:
+    - qa
+    - uat
+    - prod
+  become: yes
+  become_method: sudo
+  vars:
+    - env_type: "{{ arg_env_type }}"
+    - env_name: "{{ arg_env_name }}"
+    - server_name: "{{ arg_server_name }}"
+  roles:
+    - common.firewall
+    - java
+    - elasticsearch
+    - kibana
+    - nginx
+    - logstash
+    - common.vault-get-secrets
+    - common.realmd-install
+    - common.realmd-configure

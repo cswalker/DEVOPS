@@ -1,0 +1,9 @@
+---
+jenkins_user: "{{ jenkins_user }}"
+loadbalancer:
+  display_name: "{{ create_result.load_balancer.display_name }}"
+  id: "{{ create_result.load_balancer.id }}"
+  public_ip: "{{ create_result.load_balancer.ip_addresses[0].ip_address }}"
+  ip_addresses: "{{ create_result.load_balancer.ip_addresses }}"
+  compartment: "{{ create_result.load_balancer.compartment_id }}"
+  shape: "{{ create_result.load_balancer.shape_name }}"

@@ -1,0 +1,49 @@
+---
+- name: "Lookup Volume Facts"
+  ansible.builtin.include_vars:
+    file: "{{ metadata_base_path }}/volumes/{{ server_name }}-bind9.yaml"
+
+- name: "Add GPT Label"
+  become: yes
+  become_user: root
+  command: "parted {{ volume_attachment.device }} mklabel gpt"
+  args:
+    creates: "{{ volume_attachment.device }}1"
+
+- name: "Create Partition"
+  become: yes
+  become_user: root
+  command: "parted -a optimal {{ volume_attachment.device }} mkpart primary 0% {{ volume.size_in_gbs }}GB"
+  args:
+    creates: "{{ volume_attachment.device }}1"
+
+- name: "Create Filesystem"
+  become: yes
+  become_user: root
+  command: "sudo /sbin/mkfs.ext3 {{ volume_attachment.device }}1 -L named"
+
+- name: "Make Mount Directory"
+  become: yes
+  become_user: root
+  ansible.builtin.file:
+    path: "/mnt/named"
+    state: directory
+
+- name: "Mount named Volume"
+  become: yes
+  become_user: root
+  ansible.posix.mount:
+    path: "/mnt/named"
+    src: "{{ volume_attachment.device }}1"
+    fstype: "ext3"
+    opts: "defaults,_netdev,nofail"
+    state: mounted
+
+- name: "Set Permissions for Volume"
+  become: yes
+  become_user: root
+  ansible.builtin.file:
+    path: "/mnt/named"
+    owner: "root"
+    group: "named"
+    mode: "775"

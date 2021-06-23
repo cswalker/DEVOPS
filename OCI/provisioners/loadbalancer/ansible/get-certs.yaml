@@ -1,0 +1,31 @@
+---
+- hosts:
+    - uat
+    - prod
+  vars_files:
+    - "{{ arg_configuration_file }}"
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+  tasks:
+    - name: "Include the roles to get each required cert"
+      include_role:
+        name: letsencrypt-get-cert
+      with_items: "{{ default_urls + additional_urls }}"
+      vars:
+        cert_name: "{{ item.name }}"
+        cert_domain: "{{ item.domain }}"
+
+- hosts:
+    - static
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+  tasks:
+    - name: "Include the roles to get each required cert"
+      include_role:
+        name: letsencrypt-get-cert
+      with_items: "{{ default_urls + additional_urls }}"
+      vars:
+        cert_name: "{{ item.name }}"
+        cert_domain: "{{ item.domain }}"

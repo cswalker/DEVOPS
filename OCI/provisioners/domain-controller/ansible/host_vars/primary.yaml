@@ -1,0 +1,6 @@
+---
+secrets: {
+  wind_username: "shared",
+  wind_password: "shared",
+}
+private_ip: "10.16.33.5"

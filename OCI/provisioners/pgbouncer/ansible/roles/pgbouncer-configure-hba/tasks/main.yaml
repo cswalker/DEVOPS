@@ -1,0 +1,7 @@
+---
+- name: "Install pg_hba.conf"
+  template:
+    src: "pg_hba.conf.j2"
+    dest: "/etc/pgbouncer/pg_hba.conf"
+    lstrip_blocks: yes
+  notify: "restart pgbouncer"

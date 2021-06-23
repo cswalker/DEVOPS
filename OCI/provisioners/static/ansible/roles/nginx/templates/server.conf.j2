@@ -1,0 +1,30 @@
+server {
+    listen      80;
+    listen      443 ssl;
+    root        {{ item.root }};
+    server_name {{ item.server_name }};
+    ssl_certificate     /etc/ssl/certs/{{ item.server_name }}/cert.pem;
+    ssl_certificate_key /etc/ssl/certs/{{ item.server_name }}/privkey.pem;
+
+    location / {
+        index  index.php index.html index.htm;
+        autoindex off;    #enable listing of directory index
+
+        add_header Timing-Allow-Origin "*";
+    }
+
+    location /images_w/ {
+        root /mnt/static/{{ item.profile }}/;
+    }
+
+    location ~* \.(ttf|otf|eot|woff)$ {
+        expires max;
+        add_header Access-Control-Allow-Origin "*";
+    }
+
+    location ~* \.(cfm|xsl)$ {
+        return 403;
+    }
+
+    include /etc/nginx/image-redirects.conf;
+}

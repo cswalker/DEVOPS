@@ -1,0 +1,30 @@
+---
+- name: "Set the certificate secret names"
+  set_fact:
+    privkey_secret_name: "certificates_{{ name }}_privkey"
+    cert_secret_name: "certificates_{{ name }}_cert"
+
+- set_fact:
+    secrets: "{{
+            {
+              privkey_secret_name: 'shared',
+              cert_secret_name: 'shared',
+            }
+         }}"
+
+- name: "Lookup cert info for {{ url.name }}"
+  include_role:
+    name: "vault-get-secrets"
+    public: true # for access to secrets dict
+
+- set_fact:
+    privkey: "{{ secrets[privkey_secret_name] }}"
+    cert: "{{ secrets[cert_secret_name] }}"
+
+- name: "Update certificate to loadbalancer for {{ name }}"
+  oracle.oci.oci_loadbalancer_certificate:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    certificate_name: "{{ name }}"
+    public_certificate: "{{ cert }}"
+    private_key: "{{ privkey }}"
+    state: present

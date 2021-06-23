@@ -1,0 +1,4 @@
+---
+common_firewall_allow_ports:
+  - "53/tcp"
+  - "53/udp"

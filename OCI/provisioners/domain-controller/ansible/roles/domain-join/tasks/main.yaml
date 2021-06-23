@@ -1,0 +1,30 @@
+---
+- name: "Domain Join"
+  ansible.windows.win_domain_membership:
+    dns_domain_name: "{{ instance_domain }}"
+    hostname: "{{ instance_hostname }}"
+    domain_admin_user: "{{ secrets['bind-username'] }}"
+    domain_admin_password: "{{ secrets['bind-password'] }}"
+    domain_ou_path: "{{ organization_unit }}"
+    state: "domain"
+  register: domain_state
+
+- name: "Invoking Reboot"
+  delegate_to: localhost
+  debug:
+    var: domain_state
+  when: domain_state.reboot_required
+
+- name: "Lookup Instance Facts"
+  delegate_to: "localhost"
+  include_vars:
+    file: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+  when: domain_state.reboot_required
+
+- name: "Reboot the Instance"
+  delegate_to: "localhost"
+  oracle.oci.oci_compute_instance_actions:
+    auth_type: "instance_principal"
+    instance_id: "{{ instance.id }}"
+    action: softreset
+  when: domain_state.reboot_required

@@ -1,0 +1,10 @@
+---
+instance_compartment: "{{ compartments.shared.compartment_ocid }}" #Shared-Resources Compartment
+instance_subnet_id: "{{ regions.ashburn.shared.vcn.subnets.ctr_ocid }}" #Shared-Resources CTR Subnet
+
+env_type: "shared"
+
+secrets: {
+  bind-username: "shared",
+  bind-password: "shared" 
+}

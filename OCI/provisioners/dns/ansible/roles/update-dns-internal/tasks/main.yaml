@@ -1,0 +1,21 @@
+---
+- name: "Add A record to forward zone"
+  nsupdate:
+    key_name: "{{ zone }}."
+    key_secret: "{{ secrets['dnskey'] }}"
+    server: "{{ dns_primary_ip }}"
+    zone: "{{ zone }}."
+    record: "{{ record }}"
+    value: "{{ instance_private_ip }}"
+
+- name: "Add PTR record"
+  nsupdate:
+    key_name: "{{ zone }}."
+    key_secret: "{{ secrets['dnskey'] }}"
+    server: "{{ dns_primary_ip }}"
+    record: "{{ instance_private_ip | ipaddr('revdns') }}"
+    type: "PTR"
+    value: "{{ record }}.{{ zone }}."
+    state: present
+  when: "'*' not in record"
+

@@ -1,0 +1,58 @@
+---
+- name: "Launch a Standard E3 Flex Windows instance"
+  delegate_to: localhost
+  oracle.oci.oci_compute_instance:
+    auth_type: "instance_principal"
+    availability_domain: "{{ instance_ad }}"
+    compartment_id: "{{ instance_compartment }}"
+    display_name: "{{ instance_hostname }}"
+    image_id: "{{ instance_image }}"
+    shape: "{{ instance_shape }}"
+    shape_config:
+      ocpus: "{{ instance_cpu }}"
+      memory_in_gbs: "{{ instance_memory }}"
+    create_vnic_details:
+      private_ip: "{{ private_ip }}"
+      assign_public_ip: "{{ instance_has_public_ip }}"
+      hostname_label: "{{ instance_hostname }}"
+      subnet_id: "{{ instance_subnet_id }}"
+    metadata:
+      user_data: "{{ lookup('template', 'windows-setup.ps1') | b64encode }}"
+    defined_tags: {
+      'Common': {
+        'CreatedBy': "{{ jenkins_user }}",
+        'EnvironmentType': "{{ env_type }}",
+        'EnvironmentName': "{{ env_name }}",
+      },
+      'Instances': {
+        'ServerType': "domain-controller",
+        'ServerName': "{{ instance_hostname }}",
+      },
+      'DomainController': {
+        'DomainControllerRole': "{{ instance_role }}",
+      }
+    }
+  register: create_result
+
+- name: "Print instance details"
+  delegate_to: localhost
+  debug:
+    var: create_result
+
+- set_fact:
+    instance_private_ip: "{{ create_result.instance.primary_private_ip }}"
+
+- set_fact:
+    instance_ocid: "{{ create_result.instance.id }}"
+
+- name: "Create Instance Data Directory"
+  delegate_to: localhost
+  file:
+    path: "{{ metadata_base_path }}"
+    state: directory
+
+- name: "Save Instance Facts"
+  delegate_to: localhost
+  template:
+    src: "instance-facts.j2"
+    dest: "{{ metadata_base_path }}/{{ server_name }}.yaml"

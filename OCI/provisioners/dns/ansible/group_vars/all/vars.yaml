@@ -1,0 +1,21 @@
+---
+#Connection
+ansible_ssh_user: "opc" #Use your default OCI user
+ansible_ssh_private_key_file: "~/.ssh/oci_private_key" #Private Key created for SSH access into OCI
+
+#vault
+secrets: {
+  OCI_pubkey: "shared",
+}
+
+# provision
+default_server_name: "dns"
+default_instance_shape: "VM.Standard.E4.Flex"
+default_instance_image: "{{ regions.ashburn.default_images.ol7_ocid }}"
+default_instance_cpu: "2"
+default_instance_memory: "4"
+instance_subnet_id: "{{ regions.ashburn[env_type].vcn.subnets.svc_ocid }}"
+instance_compartment: "{{ compartments[env_type].compartment_ocid }}"
+metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ env_name }}"
+
+dns_block_volume_size: "50"

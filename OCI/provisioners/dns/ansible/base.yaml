@@ -1,0 +1,11 @@
+---
+- hosts:
+    - base
+  become: yes
+  become_user: root
+  roles:
+    - common.timezone
+    - common.firewall
+    - common.selinux
+    - bind9-install
+    - python-install

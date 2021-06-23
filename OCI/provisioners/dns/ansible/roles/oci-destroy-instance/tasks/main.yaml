@@ -1,0 +1,28 @@
+---
+- name: "Check Environment Details Exist"
+  ansible.builtin.stat:
+    path: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+  register: env_stat
+
+- name: "Fail if Environment Stats Don't Exist"
+  ansible.builtin.fail:
+    msg: "{{ env_name }} does not exist"
+  when: env_stat.stat.exists == false
+
+- name: "Lookup Instance Facts"
+  ansible.builtin.include_vars:
+    file: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+
+- name: "Output Instance Facts"
+  ansible.builtin.debug:
+    msg: "{{ instance }}"
+
+- name: "Terminate the Instance"
+  oracle.oci.oci_compute_instance:
+    instance_id: "{{ instance.id }}"
+    state: "absent"
+
+- name: "Remove the Instance Data"
+  ansible.builtin.file:
+    path: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+    state: "absent"

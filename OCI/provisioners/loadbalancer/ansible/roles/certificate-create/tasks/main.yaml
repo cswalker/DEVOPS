@@ -1,0 +1,44 @@
+---
+- name: "Export `pwd`"
+  set_fact:
+    workspace_path: "{{ lookup('env', 'PWD') }}/certs"
+
+- name: "Create cert directory"
+  file:
+    path: "{{ workspace_path }}"
+    state: directory
+    recurse: true
+
+- name: "Add Config File"
+  template:
+    src: "cert.cfg.j2"
+    dest: "{{ workspace_path }}/{{ client_name }}.cfg"
+    mode: "0660"
+
+- name: "Create SSL Cert"
+  command: "openssl req -x509 -nodes -days 730 -newkey rsa:4096 -keyout {{ workspace_path }}/private.key -out {{ workspace_path }}/public.crt -config {{ workspace_path }}/{{ client_name }}.cfg -sha256"
+
+- name: "Determine Expiry Date of Certificate"
+  shell:
+    cmd: "openssl x509 -enddate -noout -in {{ workspace_path }}/public.crt"
+    executable: "/bin/bash"
+  register: cert_expiry
+
+- name: "Format cert expiration for loadbalancer cert name"
+  shell: "date -d \"$(echo '{{ cert_expiry.stdout }}' | cut -d'=' -f2)\" '+%Y-%m-%d_%H%M%S'"
+  register: formatted_cert_expiry
+
+- name: "Create Certificate"
+  oracle.oci.oci_loadbalancer_certificate:
+    auth_type: "instance_principal"
+    certificate_name: "{{ client_name }}_{{ formatted_cert_expiry.stdout }}"
+    load_balancer_id: "{{ loadbalancer_ocid }}"
+    private_key: "{{ lookup('file', workspace_path + '/private.key') }}"
+    public_certificate: "{{ lookup('file', workspace_path + '/public.crt') }}"
+    ca_certificate: "{{ lookup('file', workspace_path + '/public.crt') }}"
+    state: "present"
+
+- name: "Remove Cert Directory"
+  file:
+    state: absent
+    name: "{{ workspace_path }}"

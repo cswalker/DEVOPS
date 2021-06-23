@@ -1,0 +1,14 @@
+---
+- name: "Create or update routing policy for maintenance"
+  oracle.oci.oci_load_balancer_routing_policy:
+    auth_type: "instance_principal"
+    load_balancer_id: "{{ loadbalancer_ocid }}"
+    name: "maintenance"
+    condition_language_version: "V1"
+    state: "present"
+    rules:
+    - name: "noop"
+      condition: "all((i 'X-NOOP') in (http.request.headers))"
+      actions:
+      - name: "FORWARD_TO_BACKENDSET"
+        backend_set_name: "maintenance"

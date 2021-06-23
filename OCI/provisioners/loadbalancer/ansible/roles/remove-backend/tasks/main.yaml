@@ -1,0 +1,11 @@
+---
+- name: "Update Load Balancer"
+  oci_load_balancer_backend_set:
+    id: "{{ loadbalancer_id }}"
+    name: "backend_servers_set"
+    auth_type: "instance_principal"
+    backends: 
+      - ip_address: "{{ ip_address }}"
+        port: 80
+    delete_backends: yes
+    state: "present"

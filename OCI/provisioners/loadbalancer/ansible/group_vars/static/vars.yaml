@@ -1,0 +1,18 @@
+---
+loadbalancer_compartment_id: "{{ compartments[env_type].compartment_ocid }}"
+loadbalancer_subnet_id: "{{ regions.ashburn[env_type]].vcn.subnets.pub_ocid }}"
+
+backend_sets:
+  - name: "static_servers"
+    policy: "ROUND_ROBIN"
+    health_checker:
+      port: 80
+      protocol: "HTTP"
+      return_code: 200
+      url_path: "/index.html"
+
+default_urls:
+  - name: "mylb.my_domain.com"
+    domain: "mylb.my_domain.com"
+
+default_backend_set: "{{ backend_sets[0].name }}"

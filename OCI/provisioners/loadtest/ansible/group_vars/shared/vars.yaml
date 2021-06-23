@@ -1,0 +1,3 @@
+---
+instance_compartment: "{{ compartments.shared.compartment_ocid }}"
+instance_subnet_id: "{{ regions.ashburn.shared.vcn.subnets.ctr_ocid }}"

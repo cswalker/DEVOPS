@@ -1,0 +1,10 @@
+---
+- hosts:
+    - base
+    - dev
+  become: yes
+  become_user: root
+  roles:
+    - common.firewall
+    - pgbouncer
+    - common.realmd-install

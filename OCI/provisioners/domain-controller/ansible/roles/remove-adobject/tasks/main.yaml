@@ -1,0 +1,5 @@
+---
+- name: "Remove Computer object from Active Directory"
+  community.windows.win_domain_computer:
+    name: "{{ remove_hostname }}"
+    state: "absent"

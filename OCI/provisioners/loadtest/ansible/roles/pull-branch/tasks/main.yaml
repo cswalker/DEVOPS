@@ -1,0 +1,5 @@
+---
+- name: "Pull Branch: {{ branch_name }}"
+  command: "git pull origin {{ branch_name }}"
+  args:
+    chdir: "{{ repository_path }}"

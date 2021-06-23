@@ -1,0 +1,46 @@
+---
+- name: "Create DNS Block Volume"
+  delegate_to: localhost
+  become: no
+  oracle.oci.oci_blockstorage_volume:
+    availability_domain: "{{ instance_ad }}"
+    compartment_id: "{{ instance_compartment }}"
+    display_name: "{{ env_name }}-{{ server_name }}-bind9"
+    size_in_gbs: "{{ dns_block_volume_size }}"
+    auth_type: "instance_principal"
+    defined_tags: {
+      'Common': {
+        'CreatedBy': "{{ jenkins_user }}",
+        'EnvironmentType': "{{ env_type }}",
+        'EnvironmentName': "{{ env_name }}",
+      },
+      'Instances': {
+        'ServerType': "dns",
+        'ServerName': "{{ server_name }}",
+      },
+    }
+  register: create_volume_result
+
+- name: "Set Volume Facts"
+  ansible.builtin.set_fact:
+    volume_result: "{{ create_volume_result }}"
+
+- name: "Print Create Volume Result"
+  delegate_to: localhost
+  become: no
+  ansible.builtin.debug:
+    var: volume_result
+
+- name: "Create Volume Data Directory"
+  delegate_to: localhost
+  become: no
+  ansible.builtin.file:
+    path: "{{ metadata_base_path }}/volumes/"
+    state: directory
+
+- name: "Save Volume Facts"
+  delegate_to: localhost
+  become: no
+  ansible.builtin.template:
+    src: "volume-facts.j2"
+    dest: "{{ metadata_base_path }}/volumes/{{ server_name }}-bind9.yaml"

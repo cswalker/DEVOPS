@@ -1,0 +1,4 @@
+---
+secrets:
+  dnsmadeeasy_api_key: "shared"
+  dnsmadeeasy_api_secret: "shared"

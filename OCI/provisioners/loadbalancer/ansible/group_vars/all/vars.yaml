@@ -1,0 +1,41 @@
+---
+loadbalancer_is_private: "no"
+
+metadata_base_path: "/home/tomcat/instances/{{ env_type }}/{{ env_name }}"
+profile_metadata_base_path: "/home/tomcat/profiles/{{ profile }}"
+instances_metadata_base_path: "/home/tomcat/instances/"
+
+additional_urls: []
+
+generic_listeners: []
+
+loadbalancer_defined_tags: {
+  'Common': {
+    'CreatedBy': "{{ jenkins_user }}",
+    'EnvironmentType': "{{ env_type }}",
+    'EnvironmentName': "{{ env_name }}",
+  },
+  'Instances': {
+    'ServerType': "loadbalancer",
+    'ServerName': "{{ server_name }}",
+  }
+}
+loadbalancer_display_name: "{{ env_name }}-{{ server_name }}"
+loadbalancer_facts_path: "{{ metadata_base_path }}/{{ server_name }}.yaml"
+loadbalancer_shape: "100Mbps"
+loadbalancer_subnet_ids:
+  - "{{ regions.ashburn[env_type].vcn.subnets[subnet_name] }}"
+
+default_backend_set_name: "{{ backend_sets[0].name }}"
+
+health_checks:
+  app:
+    port: 80
+    protocol: "HTTP"
+    return_code: 200
+    url_path: "/monitor.cfm"
+  static:
+    port: 80
+    protocol: "HTTP"
+    return_code: 200
+    url_path: "/index.html"

@@ -1,0 +1,9 @@
+---
+- hosts:
+    - prod
+  become: yes
+  become_user: root
+  vars:
+    pool_mode: "{{ arg_pool_mode | default('session') }}"
+  roles:
+    - update-pool-mode-value

@@ -1,0 +1,8 @@
+---
+collections:
+  - name: "oracle.oci"
+    version: "2.19.0"
+  - name: "community.docker"
+    version: "1.1.0"
+  - name: "ansible.windows"
+    version: "1.4.0"

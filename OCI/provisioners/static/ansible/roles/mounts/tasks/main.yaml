@@ -1,0 +1,20 @@
+---
+- name: "Install NFS Utils"
+  yum:
+    name: "nfs-utils"
+    state: present
+    lock_timeout: 180
+
+- name: "Make Mount Directories"
+  file:
+    path: "{{ item.path }}"
+    state: directory
+  with_items: "{{ mounts }}"
+
+- name: "Mount Filesystems"
+  mount:
+    path: "{{ item.path }}"
+    src: "{{ item.src }}"
+    fstype: "{{ item.fstype }}"
+    state: mounted
+  with_items: "{{ mounts }}"

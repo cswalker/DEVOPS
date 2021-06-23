@@ -1,0 +1,29 @@
+---
+- name: "Create JMeter Directory"
+  file:
+    path: "/opt/jmeter"
+    state: directory
+
+- name: "Download and Unzip JMeter Binary"
+  unarchive:
+    src: "http://yum-mirror.shared-resources.my.domain/repo/7/jmeter/{{ jmeter_version }}.tgz"
+    dest: "/opt/jmeter"
+    remote_src: yes
+
+- name: "Download and Unzip jmeter plugins"
+  unarchive:
+    src: "{{ plugin.file_path }}"
+    dest: "{{ jmeter_dir }}"
+    remote_src: yes
+  with_items: "{{ jmeter_plugins }}"
+  loop_control:
+    label: "{{ plugin.name }}"
+    loop_var: plugin
+
+- name: "Add JMeter Symlink to Local Bin Path"
+  file:
+    src: "/opt/jmeter/{{ jmeter_version }}/bin/jmeter"
+    dest: "/usr/local/bin/jmeter"
+    owner: "root"
+    group: "root"
+    state: link

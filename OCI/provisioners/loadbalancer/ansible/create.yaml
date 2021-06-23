@@ -1,0 +1,36 @@
+---
+- hosts:
+    - uat
+  vars_files:
+    - "{{ arg_configuration_file }}"
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    server_name: "{{ arg_server_name }}"
+    profile: "{{ arg_profile | default('') }}"
+    jenkins_user: "{{ arg_jenkins_user }}"
+    subnet_name: "{{ arg_subnet_name | default('pub') }}_ocid"
+  roles:
+    - common.oci-vars
+    - oci-create-lb
+
+- hosts:
+    - prod
+  roles:
+    - common.oci-vars
+    - oci-create-lb
+    - certificate-create
+
+- hosts:
+    - static
+  vars:
+    env_type: "{{ arg_env_type }}"
+    env_name: "{{ arg_env_name }}"
+    server_name: "{{ arg_server_name }}"
+    jenkins_user: "{{ arg_jenkins_user }}"
+    subnet_name: "{{ arg_subnet_name | default('pub') }}_ocid"
+  roles:
+    - common.oci-vars
+    - oci-create-lb
+  environment:
+    OCI_ANSIBLE_AUTH_TYPE: "instance_principal"

@@ -1,0 +1,11 @@
+---
+- hosts:
+    - dev
+    - shared
+  become: yes
+  become_user: root
+  roles:
+    - common.oci-vars
+    - common.timezone
+    - splunk-install
+    - common.firewall

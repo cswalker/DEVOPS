@@ -1,0 +1,17 @@
+---
+- hosts:
+    - shared
+    - qa
+    - uat
+    - prod
+  become: yes
+  become_user: root
+  vars:
+    env_type: "{{ arg_env_type }}"
+    jmeter_app_server_name: "{{ arg_jmeter_app_server_name }}"
+    jmeter_maven_profile: "{{ arg_jmeter_maven_profile }}"
+    jmeter_thread_count: "{{ arg_jmeter_thread_count }}"
+    jmeter_ramp_up_in_seconds: "{{ arg_jmeter_ramp_up_in_seconds }}"
+    jmeter_loop_count: "{{ arg_jmeter_loop_count }}"
+  roles:
+    - run-tests

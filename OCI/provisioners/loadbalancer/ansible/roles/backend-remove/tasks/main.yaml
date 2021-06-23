@@ -1,0 +1,19 @@
+---
+- name: "Remove Backend '{{ ip_address }}':'{{ port }}' from set '{{ backendset_name }}'"
+  oracle.oci.oci_loadbalancer_backend:
+    load_balancer_id: "{{ loadbalancer_facts.id }}"
+    backend_set_name: "{{ backendset_name }}"
+    ip_address: "{{ ip_address }}"
+    port: "{{ port }}"
+    key_by: "ip_address,port"
+    state: "absent"
+  delegate_to: localhost
+  become: no
+  register: backend_remove
+
+- name: "Warn if nothing was removed"
+  fail:
+    msg: "The backend remove command didn't remove anything from the loadbalancer. \
+          This might be okay if the item did not exist so we can't error out, but here's a big error message to get your attention"
+  when: backend_remove.changed == false
+  ignore_errors: yes

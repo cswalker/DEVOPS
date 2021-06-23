@@ -1,0 +1,11 @@
+---
+- name: "Create Cloudflare A Record"
+  cloudflare_dns:
+    zone: "my_domain.com"
+    record: "{{ record_name }}"
+    type: A
+    value: "{{ record_value }}"
+    account_email: "{{ secrets['cloudflare_email'] }}"
+    account_api_token: "{{ secrets['cloudflare_api_key'] }}"
+    state: present
+  register: record

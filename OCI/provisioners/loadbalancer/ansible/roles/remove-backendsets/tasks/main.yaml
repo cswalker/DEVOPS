@@ -1,0 +1,7 @@
+---
+- name: "Remove Backend Sets"
+  oci_load_balancer_backend_set:
+    name: "backend_servers_set"
+    id: "{{ loadbalancer_id }}"
+    backends: []
+    purge_backends: yes

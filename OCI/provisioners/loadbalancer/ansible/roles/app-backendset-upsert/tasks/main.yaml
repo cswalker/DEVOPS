@@ -1,0 +1,12 @@
+---
+- name: "Create or Update the Backend Set"
+  oracle.oci.oci_loadbalancer_backend_set:
+    load_balancer_id: "{{ loadbalancer_ocid }}"
+    name: "{{ app_loadbalancer_backendset_name }}"
+    policy: "{{ app_loadbalancer_backendset_policy }}"
+    ssl_configuration: 
+      certificate_name: "{{ loadbalancer_certificate_name }}"
+      verify_peer_certificate: false
+    health_checker: "{{ app_loadbalancer_backendset_health_checker }}"
+    backends: "{{ app_loadbalancer_backends }}"
+    state: present

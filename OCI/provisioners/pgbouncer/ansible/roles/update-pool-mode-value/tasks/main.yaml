@@ -1,0 +1,13 @@
+---
+- name: "Updating pool_mode value to {{ pool_mode }} in PgBouncer Configuration File"
+  ansible.builtin.replace:
+    path: "/etc/pgbouncer/pgbouncer.ini"
+    regexp: '(?P<configName>pool_mode\s=\s)(?P<configValue>\w+)'
+    replace: '\g<configName>{{ pool_mode }}'
+
+- name: "Restart pgbouncer service"
+  service:
+    name: "pgbouncer"
+    state: restarted
+    daemon_reload: yes
+    enabled: yes

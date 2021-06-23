@@ -1,0 +1,11 @@
+---
+- name: "Install Bind9 & Libraries"
+  ansible.builtin.yum:
+    name: "{{ packages }}"
+    state: present
+    lock_timeout: 180
+  vars:
+    packages:
+      - bind
+      - bind-libs
+      - bind-utils

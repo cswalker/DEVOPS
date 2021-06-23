@@ -1,0 +1,32 @@
+---
+- name: "Create Load Balancer"
+  oracle.oci.oci_loadbalancer_load_balancer:
+    auth_type: "instance_principal"
+    compartment_id: "{{ loadbalancer_compartment_id }}"
+    display_name: "{{ loadbalancer_display_name }}"
+    shape_name: "{{ loadbalancer_shape }}"
+    is_private: "{{ loadbalancer_is_private }}"
+    key_by: 'display_name'
+    defined_tags: "{{ loadbalancer_defined_tags }}"
+    subnet_ids: "{{ loadbalancer_subnet_ids }}"
+    state: present
+  register: create_result
+
+- name: "Set fact for Load Balancer ID"
+  set_fact:
+    loadbalancer_ocid: "{{ create_result.load_balancer.id }}"
+
+- name: "Print instance details"
+  debug:
+    msg: "Load Balancer Create Result: {{ create_result }}"
+
+- name: "Create Instance Data Directory"
+  delegate_to: localhost
+  file:
+    path: "{{ metadata_base_path }}"
+    state: directory
+
+- name: "Save Instance Facts"
+  template:
+    src: "loadbalancer-facts.j2"
+    dest: "{{ loadbalancer_facts_path }}"

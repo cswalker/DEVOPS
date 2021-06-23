@@ -1,0 +1,12 @@
+---
+- hosts:
+    - qa
+    - uat
+    - prod
+  become: yes
+  become_user: root
+  vars:
+    hba_conf_entry: "{{ arg_hba_conf_entry }}"
+    block_name: "{{ arg_block_name }}"
+  roles:
+    - update-hba-configuration
