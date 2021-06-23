@@ -16,7 +16,7 @@ terraform {
   #Terraform does not permit variables here.
   backend "http" {
     ##Expires Fri, Jan 19, 2080, 16:04:00 UTC
-    address       = "https://objectstorage.us-ashburn-1.oraclecloud.com/p/GT93i0gBoGKp7L7-7UmhdFupH-OW_nVYWlYE_pKpxPRHVDyPVPT4uVNqAy6oxRn-/n/idsluxlvwhov/b/sfly-services/o/vault/terraform.tfstate"
+    address       = "URL TO YOUR TFSTATE DATA"
     update_method = "PUT"
   }
 }
