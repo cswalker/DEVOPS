@@ -1,0 +1,5 @@
+credentials_file    = "$HOME/.aws/credentials"
+profile             = "default"
+bucket_name         = "${local.environment}-${local.aws_region}-terraform"
+state_store         = "subprod-state"
+state_key           = "${local.environment}-${local.aws_region}.tfstate"
