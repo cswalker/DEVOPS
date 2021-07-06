@@ -1,0 +1,54 @@
+# A word about variable substitution and notation
+# dot notation will always be interpreted literally
+# bracket notation will allow for substitution when the substitution string is the name of an existing variable
+#
+# e.g.
+# aws.account.subprod will not substitute `subprod`
+# aws.account["subprod"] will allow for substitution of `subprod` if subprod is a variable
+  # otherwise it is interpreted literally
+# substittuions will occur only when encapsulating the variable with "{{  }}"
+
+# Tenancy is top level that has ownership over all other resources
+
+# Global Resources
+global:
+  account:
+    subprod: "1234567890"
+    prod: "0987654321"
+  region:
+    primary: "us-east-1"
+    secondary: "us-west-2"
+
+# Tenancy Resources
+environment:
+  shared:
+    east:
+      vpc_id: "vpc-1234567890"
+      subnets:
+        private: ["subnet-11234567890", "subnet-21234567890", "subnet-31234567890"]
+        public: ["subnet-41234567890", "subnet-51234567890", "subnet-61234567890"]
+      route_tables:
+        private: ["rt-11234567890", "rt-21234567890", "rt-31234567890"]
+      peering: 
+        vpn_partner1: 
+          cidr: "172.1.1.0/24"
+          connection: "pcx-11234567890"
+    west:
+      vpd_id: "vpc-0987654321"
+      subnets:
+        private: ["subnet-10987654321", "subnet-20987654321", "subnet-30987654321"]
+        public: ["subnet-40987654321", "subnet-50987654321", "subnet-60987654321"]
+      route_tables:
+        private: ["rt-10987654321", "rt-20987654321", "rt-30987654321"]
+      peering: 
+        vpn_partner1: 
+          cidr: "172.1.2.0/24"
+          connection: "pcx-10987654321"
+
+#Modules
+logs:
+  syslog_destination: "s3logs.syslogurl.com:8080"
+  source_hash: "base64sha256(uuid())"
+  source_s3_key: "s3logs.zip"
+
+
