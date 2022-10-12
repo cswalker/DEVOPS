@@ -1,0 +1,137 @@
+#!groovy
+properties (
+    [
+            parameters(
+                    [
+                            choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy.'),
+                            choice(name: "REGION", choices: ['us-east-1', 'us-west-2'], description: 'Region to deploy.'),
+                    ]
+            ),
+            ([
+                    $class: 'DatadogJobProperty',
+                    tagProperties: "jenkins.job.duration,jenkins.job.status"
+            ])
+    ]
+)
+
+disableConcurrentBuilds()
+
+def VERSION
+def COMPOSE_COMMAND
+def PLAN_RESULT
+def TF_CONTAINER
+
+node("${params.ENVIRONMENT}"){
+    cleanWs()
+    checkout scm
+    VERSION="${env.CHANGE_BRANCH}-${env.BUILD_NUMBER}".toLowerCase().minus("pr").minus("_")
+    TF_CONTAINER=docker.image("hashicorp/terraform:0.14.7")
+    PLAN_RESULT="0"
+
+    stage('Prep') {
+        buildName "${env.BUILD_NUMBER}) ${params.ENVIRONMENT}"
+        buildDescription "${env.CHANGE_BRANCH} => ${env.CHANGE_TARGET}. \nChange Author: ${env.CHANGE_AUTHOR}"
+        VERSION="${env.CHANGE_BRANCH}-${env.BUILD_NUMBER}".toLowerCase().minus("pr").minus("_")
+    }
+
+    ansiColor('xterm') {
+        try {
+            notifySlackNewDeploy()
+            stage('Infrastructure Plan') {
+                TF_CONTAINER.inside("--entrypoint ''") {
+                    withCredentials([gitUsernamePassword(credentialsId: 'GitCreds', gitToolName: 'Default')]) {
+                        dir("terraform/root-module") {
+                            sh "terraform init -backend-config=../environments/${params.ENVIRONMENT}/${params.REGION}/${params.ENVIRONMENT}.backend"
+                            PLAN_RESULT = sh(
+                                    script: "terraform plan --var-file=../environments/${params.ENVIRONMENT}/${params.REGION}/${params.ENVIRONMENT}.tfvars -out=${params.ENVIRONMENT}_${params.REGION}.planfile -detailed-exitcode",
+                                    returnStatus: true
+                            )
+                        }
+                    }
+                }
+            }
+            stage('Infrastructure Apply') {
+                if (2.equals(PLAN_RESULT)) {
+                    askSlackApproval()
+                    userInputProceed(params.ENVIRONMENT)
+                    TF_CONTAINER.inside("--entrypoint=''") {
+                        withCredentials([gitUsernamePassword(credentialsId: 'GitCreds', gitToolName: 'Default')]) {
+                            dir("terraform/root-module") {
+                                sh "terraform init -reconfigure -backend-config=../environments/${params.ENVIRONMENT}/${params.REGION}/${params.ENVIRONMENT}.backend"
+                                sh "terraform apply -auto-approve ${params.ENVIRONMENT}_${params.REGION}.planfile"
+                            }
+                        }
+                    }
+                } else {
+                    echo "No Infrastructure Changes to Deploy."
+                }
+            }
+        } catch (Exception e) {
+            currentBuild.result = 'FAILURE'
+            println e.toString()
+        } finally {
+            notifySlack(currentBuild.result)
+            if (env.CHANGE_BRANCH.startsWith('PR')){
+                sh "${COMPOSE_COMMAND} down"
+            }
+        }
+    }
+}
+
+def notifySlackNewDeploy() {
+    def color = "#7FDBFF"
+    def msg = "'${env.JOB_NAME}' \n 'Env: ${params.ENVIRONMENT}' \n${env.BUILD_URL}"
+    def channel = "#pipeline-notifications"
+    if ('test'.equals(params.ENVIRONMENT) || 'prod'.equals(params.ENVIRONMENT)) {
+        slackSend(channel: channel, color: color, message: msg + "\n\n @here Deploying version " + env.CHANGE_BRANCH + " to Test! \n Deploy will begin in 2 minutes if no objections are stated.")
+    }
+}
+def askSlackApproval(){
+    def color = '#00FF00'
+    def msg = "A pipeline is seeking approval: \n '${env.JOB_NAME}' ENV: ${params.ENVIRONMENT} \n${env.BUILD_URL}"
+    def channel = "#pipeline-notifications"
+    if ('test'.equals(params.ENVIRONMENT) || 'prod'.equals(params.ENVIRONMENT)){
+        slackSend(channel: channel, color: color, message: msg)
+    }
+}
+def userInputProceed(environment){
+    def proceed = false
+    if (environment == 'dev' || environment == 'test') {
+        proceed = true
+    } else {
+        timeout(time: 1, unit: 'HOURS'){
+            proceed = input(
+                    id: "${environment}", message: 'Do you approve?', parameters: [
+                    [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please Confirm']
+            ]
+            )
+        }
+        if(!proceed){
+            error "User decided not to proceed."
+        }
+    }
+}
+def notifySlack(String buildStatus) {
+    GIT_COMMIT_EMAIL = sh(script: "git log -1 origin/${env.CHANGE_BRANCH} --format=\'%ae\'", returnStdout: true).trim()
+    userId = slackUserIdFromEmail(email: GIT_COMMIT_EMAIL)
+    def slackChannel
+    if (env.CHANGE_BRANCH.startsWith('PR')){
+        slackChannel = "@$userId"
+        slackMessage = "Pull Request"
+    } else {
+        slackChannel = "#pipeline-notifications"
+        slackMessage = "Build"
+    }
+    if (buildStatus == 'FAILURE') {
+        slackSend(
+                channel: slackChannel,
+                message: ":X: *Card-Orders $slackMessage:* ${env.BUILD_NUMBER}) ${env.CHANGE_BRANCH} by <@$userId> *${env.CHANGE_AUTHOR}* Failed\n${env.BUILD_URL}"
+        )
+
+    } else {
+        slackSend(
+                channel: slackChannel,
+                message: ":white_check_mark: *Card-Orders $slackMessage:* ${env.BUILD_NUMBER}) ${env.CHANGE_BRANCH} by <@$userId> *${env.CHANGE_AUTHOR}* Passed\n${env.BUILD_URL}"
+        )
+    }
+}
